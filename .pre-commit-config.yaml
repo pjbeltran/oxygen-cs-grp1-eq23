@@ -1,6 +1,7 @@
 ## To implement
 
 repos:
+
   - repo: local
     hook:
       - id: pre-commit

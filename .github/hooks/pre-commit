@@ -1,6 +1,5 @@
 #!/bin/sh
 
-echo "GOAT"
-# flake8 --max line-length 80 ./src/
+flake8 --max-line-length 80 ./src/
 
-# black --check ./src/
+black --check ./src/
