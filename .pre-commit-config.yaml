@@ -9,4 +9,3 @@ repos:
         name: Pre-commit git hook file
         entry: .github/hooks/pre-commit
         language: python
-        types: [yaml]
