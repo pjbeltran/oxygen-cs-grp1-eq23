@@ -1,0 +1,5 @@
+#!/bin/sh
+
+flake8 --max line-length 80 ./src/
+
+black --check ./src/
