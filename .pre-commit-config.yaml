@@ -3,6 +3,8 @@
 repos:
   - repo: local
     hook:
-      - id: pre-commit-hook
+      - id: pre-commit
         name: Pre-commit git hook file
-        entry: .github/hooks/pre-commit-hook
+        entry: .github/hooks/pre-commit
+        language: python
+        types: [yaml]
