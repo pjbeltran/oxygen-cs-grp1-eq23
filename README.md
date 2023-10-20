@@ -10,7 +10,7 @@ This application uses `pipenv`, a tool that aims to bring the best of all packag
 
 ## Requierements
 
-- Python 3.8+
+- Python 3.8
 - pipenv
 
 ## Getting Started
