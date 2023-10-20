@@ -99,5 +99,4 @@ class Main:
 
 if __name__ == "__main__":
     main = Main()
-    main.start()
-    
+    main.start() 
