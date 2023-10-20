@@ -52,10 +52,16 @@ class Main:
         )
 
         self._hub_connection.on("ReceiveSensorData", self.on_sensor_data_received)
-        self._hub_connection.on_open(lambda: print("||| Connection opened.", flush=True))
-        self._hub_connection.on_close(lambda: print("||| Connection closed.", flush=True))
+        self._hub_connection.on_open(
+            lambda: print("||| Connection opened.", flush=True)
+        )
+        self._hub_connection.on_close(
+            lambda: print("||| Connection closed.", flush=True)
+        )
         self._hub_connection.on_error(
-            lambda data: print(f"||| An exception was thrown closed: {data.error}", flush=True)
+            lambda data: print(
+                f"||| An exception was thrown closed: {data.error}", flush=True
+            )
         )
 
     def on_sensor_data_received(self, data):
@@ -93,4 +99,4 @@ class Main:
 
 if __name__ == "__main__":
     main = Main()
-    main.start() 
+    main.start()
