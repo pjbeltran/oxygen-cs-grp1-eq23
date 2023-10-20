@@ -4,7 +4,8 @@ fail_fast: false
 repos:
 
   - repo: local
-    hook:
-      - id: pre-commit
-        name: Pre-commit git hook file
-        entry: .github/hooks/pre-commit
+    hooks:
+        - id: pre-commit
+          name: Pre-commit git hook file
+          entry: .github/hooks/pre-commit
+          language: python
