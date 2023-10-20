@@ -1,4 +1,5 @@
 ## To implement
+fail_fast: false
 
 repos:
 
