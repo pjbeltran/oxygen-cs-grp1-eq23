@@ -1,1 +1,8 @@
 ## To implement
+
+repos:
+  - repo: local
+    hook:
+      - id: pre-commit-hook
+        name: Pre-commit git hook file
+        entry: .github/hooks/pre-commit-hook
