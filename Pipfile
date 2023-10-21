@@ -11,11 +11,12 @@ signalrcore = "*"
 pre-commit
 flake8
 black
+pytest
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 start = "python src/main.py"
-test = "python test/test.py"
+test = "pytest"
 lint = "python -m black src/"
