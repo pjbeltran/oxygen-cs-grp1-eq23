@@ -13,10 +13,10 @@ class Main:
         self.HOST = " https://hvac-simulator-a23-y2kpq.ondigitalocean.app"  # Setup your host here
         self.TOKEN = "WeVCNw8DOZ"  # Setup your token here
 
-        self.TICKETS = 1  # Setup your tickets here
-        self.T_MAX = 200  # Setup your max temperature here
-        self.T_MIN = 1  # Setup your min temperature here
-        self.DATABASE = None  # Setup your database here
+        self.TICKETS = 2  # Setup your tickets here
+        self.T_MAX = 30  # Setup your max temperature here
+        self.T_MIN = 18  # Setup your min temperature here
+        self.DATABASE = "log680"  # Setup your database here
 
     def __del__(self):
         if self._hub_connection != None:
