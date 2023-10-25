@@ -3,6 +3,7 @@ import logging
 import requests
 import json
 import time
+import psycopg2
 
 
 class Main:
@@ -10,11 +11,11 @@ class Main:
         """Setup environment variables and default values."""
         self._hub_connection = None
         self.HOST = None  # Setup your host here
-        self.TOKEN = None  # Setup your token here
+        self.TOKEN = "WeVCNw8DOZ"  # Setup your token here
 
         self.TICKETS = 1  # Setup your tickets here
-        self.T_MAX = None  # Setup your max temperature here
-        self.T_MIN = None  # Setup your min temperature here
+        self.T_MAX = 200  # Setup your max temperature here
+        self.T_MIN = 1  # Setup your min temperature here
         self.DATABASE = None  # Setup your database here
 
     def __del__(self):
