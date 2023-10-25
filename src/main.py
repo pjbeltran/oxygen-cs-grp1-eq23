@@ -4,14 +4,13 @@ import requests
 import json
 import time
 import psycopg2
-from psycopg2 import Error
 
 
 class Main:
     def __init__(self):
         """Setup environment variables and default values."""
         self._hub_connection = None
-        self.HOST = None  # Setup your host here
+        self.HOST = " https://hvac-simulator-a23-y2kpq.ondigitalocean.app"  # Setup your host here
         self.TOKEN = "WeVCNw8DOZ"  # Setup your token here
 
         self.TICKETS = 1  # Setup your tickets here
@@ -73,6 +72,7 @@ class Main:
             date = data[0]["date"]
             temperature = float(data[0]["data"])
             self.take_action(temperature)
+            self.send_event_to_database(date, temperature)
         except Exception as err:
             print(err, flush=True)
 
