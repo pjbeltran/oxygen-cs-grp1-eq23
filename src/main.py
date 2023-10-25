@@ -71,17 +71,20 @@ class Main:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
             date = data[0]["date"]
             temperature = float(data[0]["data"])
-            self.take_action(temperature)
-            self.send_event_to_database(date, temperature)
+            self.take_action(temperature, date)
         except Exception as err:
             print(err, flush=True)
 
-    def take_action(self, temperature):
+    def take_action(self, temperature, date):
         """Take action to HVAC depending on current temperature."""
         if float(temperature) >= float(self.T_MAX):
             self.send_action_to_hvac("TurnOnAc")
+            self.send_event_to_database(date, "TurnOnAc", temperature)
         elif float(temperature) <= float(self.T_MIN):
             self.send_action_to_hvac("TurnOnHeater")
+            self.send_event_to_database(date, "TurnOnHeater", temperature)
+        else:
+            self.send_event_to_database(date, "DoNothing", temperature)
 
     def send_action_to_hvac(self, action):
         """Send action query to the HVAC service."""
@@ -89,7 +92,7 @@ class Main:
         details = json.loads(r.text)
         print(details, flush=True)
 
-    def send_event_to_database(self, timestamp, event):
+    def send_event_to_database(self, timestamp, event, temperature):
         """Save sensor data into database."""
         try:
             # Set up the PostgreSQL connection
@@ -105,10 +108,10 @@ class Main:
             cursor = connection.cursor()
 
             # Define the PostgreSQL INSERT statement
-            postgres_insert_query = f"INSERT INTO sensor_data (timestamp, event) VALUES (%s, %s)"
+            postgres_insert_query = f"INSERT INTO sensor_data (timestamp, temperature, event) VALUES (%s, %s, %s)"
             
             # Insert data into the PostgreSQL table
-            record_to_insert = (timestamp, event)
+            record_to_insert = (timestamp, temperature, event)
             cursor.execute(postgres_insert_query, record_to_insert)
 
             # Commit the changes to the database
