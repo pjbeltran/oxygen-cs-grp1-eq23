@@ -4,6 +4,7 @@ import requests
 import json
 import time
 import psycopg2
+from psycopg2 import Error
 
 
 class Main:
@@ -91,8 +92,29 @@ class Main:
     def send_event_to_database(self, timestamp, event):
         """Save sensor data into database."""
         try:
-            # To implement
-            pass
+            # Set up the PostgreSQL connection
+            connection = psycopg2.connect(
+                user="postgres",
+                password="postgres",
+                host="localhost",
+                port="5432",
+                database="log680"
+            )
+
+            # Create a cursor
+            cursor = connection.cursor()
+
+            # Define the PostgreSQL INSERT statement
+            postgres_insert_query = f"INSERT INTO sensor_data (timestamp, event) VALUES (%s, %s)"
+            
+            # Insert data into the PostgreSQL table
+            record_to_insert = (timestamp, event)
+            cursor.execute(postgres_insert_query, record_to_insert)
+
+            # Commit the changes to the database
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Record inserted successfully into sensor_data table")
         except requests.exceptions.RequestException as e:
             # To implement
             pass
