@@ -1,26 +1,20 @@
-from signalrcore.hub_connection_builder import HubConnectionBuilder
+#from signalrcore.hub_connection_builder import HubConnectionBuilder
 import logging
-import requests
+#mport requests
 import json
 import time
 import psycopg2
 
-
 class Main:
-    def __init__(self):
-        """Setup environment variables and default values."""
+    def __init__(self, host, token, tickets, t_max, t_min, database):
+        """Initialize with environment variables and provided values."""
         self._hub_connection = None
-        self.HOST = " https://hvac-simulator-a23-y2kpq.ondigitalocean.app"  # Setup your host here
-        self.TOKEN = "WeVCNw8DOZ"  # Setup your token here
-
-        self.TICKETS = 2  # Setup your tickets here
-        self.T_MAX = 30  # Setup your max temperature here
-        self.T_MIN = 18  # Setup your min temperature here
-        self.DATABASE = "log680"  # Setup your database here
-
-    def __del__(self):
-        if self._hub_connection != None:
-            self._hub_connection.stop()
+        self.HOST = host
+        self.TOKEN = token
+        self.TICKETS = tickets
+        self.T_MAX = t_max
+        self.T_MIN = t_min
+        self.DATABASE = database
 
     def setup(self):
         """Setup Oxygen CS."""
@@ -93,7 +87,7 @@ class Main:
         print(details, flush=True)
 
     def send_event_to_database(self, timestamp, event, temperature):
-        """Save sensor data into database."""
+        """Save sensor data into the database."""
         try:
             # Set up the PostgreSQL connection
             connection = psycopg2.connect(
@@ -101,14 +95,14 @@ class Main:
                 password="postgres",
                 host="localhost",
                 port="5432",
-                database="log680"
+                database=self.DATABASE
             )
 
             # Create a cursor
             cursor = connection.cursor()
 
             # Define the PostgreSQL INSERT statement
-            postgres_insert_query = f"INSERT INTO sensor_data (timestamp, temperature, event) VALUES (%s, %s, %s)"
+            postgres_insert_query = "INSERT INTO sensor_data (timestamp, temperature, event) VALUES (%s, %s, %s)"
             
             # Insert data into the PostgreSQL table
             record_to_insert = (timestamp, temperature, event)
@@ -122,7 +116,13 @@ class Main:
             # To implement
             pass
 
-
 if __name__ == "__main__":
-    main = Main()
+    main = Main(
+        host="https://hvac-simulator-a23-y2kpq.ondigitalocean.app",
+        token="WeVCNw8DOZ",
+        tickets=2,
+        t_max=30,
+        t_min=18,
+        database="log680"
+    )
     main.start()
