@@ -112,7 +112,7 @@ class Main:
             connection.commit()
             count = cursor.rowcount
             print(count, "Record inserted successfully into sensor_data table")
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             # To implement
             pass
 
