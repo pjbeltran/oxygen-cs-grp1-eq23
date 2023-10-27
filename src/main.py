@@ -6,19 +6,18 @@ import time
 
 
 class Main:
-    def __init__(self):
-        """Setup environment variables and default values."""
+    def __init__(self, host, token, tickets, t_max, t_min, database):
+        """Initialize with environment variables and provided values."""
         self._hub_connection = None
-        self.HOST = None  # Setup your host here
-        self.TOKEN = None  # Setup your token here
-
-        self.TICKETS = 1  # Setup your tickets here
-        self.T_MAX = None  # Setup your max temperature here
-        self.T_MIN = None  # Setup your min temperature here
-        self.DATABASE = None  # Setup your database here
+        self.HOST = host
+        self.TOKEN = token
+        self.TICKETS = tickets
+        self.T_MAX = t_max
+        self.T_MIN = t_min
+        self.DATABASE = database
 
     def __del__(self):
-        if self._hub_connection != None:
+        if self._hub_connection is not None:
             self._hub_connection.stop()
 
     def setup(self):
@@ -68,7 +67,7 @@ class Main:
         """Callback method to handle sensor data on reception."""
         try:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
-            date = data[0]["date"]
+            # date = data[0]["date"] -> TODO à utiliser
             temperature = float(data[0]["data"])
             self.take_action(temperature)
         except Exception as err:
@@ -94,9 +93,17 @@ class Main:
             pass
         except requests.exceptions.RequestException as e:
             # To implement
+            print(e, flush=True)
             pass
 
 
 if __name__ == "__main__":
-    main = Main()
+    main = Main(
+        host="https://hvac-simulator-a23-y2kpq.ondigitalocean.app",
+        token="WeVCNw8DOZ",
+        tickets=2,
+        t_max=30,
+        t_min=18,
+        database="log680",
+    )
     main.start()
