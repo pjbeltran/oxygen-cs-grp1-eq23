@@ -8,9 +8,9 @@ requests = "*"
 signalrcore = "*"
 
 [dev-packages]
-pre-commit
-"flake8"
-"black"
+pre-commit = "*"
+flake8 = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"
