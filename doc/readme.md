@@ -21,7 +21,7 @@
 Pour faire marcher le projet, nous avions premièrement changer les variables du code source. Ces variables étaient `"HOST"` (le url pour accéder à la simulation),
 `"TOKEN"` (le token donné par le chargé de laboratoire pour avoir accès aux données), `"T_MAX"` (la température maximum, en degré celsius, avant que l'air climatisé (AC) embarque), `"T_MIN"` (la température minimum, en degré celsius, avant que le chauffage embarque) et `"DATABASE"` (la base de données utilisée pour stocker les données de la simulation).
 
-
+![image](./variables.png)
 
 ### Ajout de la base de données du code source
 
