@@ -3,7 +3,7 @@ import logging
 import requests
 import json
 import time
-
+import psycopg2
 
 class Main:
     def __init__(self, host, token, tickets, t_max, t_min, database):
@@ -69,16 +69,20 @@ class Main:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
             # date = data[0]["date"] -> TODO à utiliser
             temperature = float(data[0]["data"])
-            self.take_action(temperature)
+            self.take_action(temperature, date)
         except Exception as err:
             print(err, flush=True)
 
-    def take_action(self, temperature):
+    def take_action(self, temperature, date):
         """Take action to HVAC depending on current temperature."""
         if float(temperature) >= float(self.T_MAX):
             self.send_action_to_hvac("TurnOnAc")
+            self.send_event_to_database(date, "TurnOnAc", temperature)
         elif float(temperature) <= float(self.T_MIN):
             self.send_action_to_hvac("TurnOnHeater")
+            self.send_event_to_database(date, "TurnOnHeater", temperature)
+        else:
+            self.send_event_to_database_temp(date, temperature)
 
     def send_action_to_hvac(self, action):
         """Send action query to the HVAC service."""
@@ -86,9 +90,36 @@ class Main:
         details = json.loads(r.text)
         print(details, flush=True)
 
-    def send_event_to_database(self, timestamp, event):
-        """Save sensor data into database."""
+    def send_event_to_database(self, timestamp, event, temperature):
+        """Save sensor data into the database."""
         try:
+            # Set up the PostgreSQL connection
+            connection = psycopg2.connect(
+                user="postgres",
+                password="postgres",
+                host="localhost",
+                port="5432",
+                database=self.DATABASE
+            )
+
+            # save temp
+            self.send_event_to_database_temp(timestamp, temperature)
+
+            # Create a cursor
+            cursor = connection.cursor()
+
+            # Define the PostgreSQL INSERT statement
+            postgres_insert_query = "INSERT INTO sensor_data_event (timestamp, event) VALUES (%s, %s)"
+            
+            # Insert data into the PostgreSQL table
+            record_to_insert = (timestamp, event)
+            cursor.execute(postgres_insert_query, record_to_insert)
+
+            # Commit the changes to the database
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Record inserted successfully into sensor_data_event table")
+        except Exception as e:
             # To implement
             pass
         except requests.exceptions.RequestException as e:
@@ -96,6 +127,35 @@ class Main:
             print(e, flush=True)
             pass
 
+    def send_event_to_database_temp(self, timestamp, temperature):
+        """Save sensor data into the database."""
+        try:
+            # Set up the PostgreSQL connection
+            connection = psycopg2.connect(
+                user="postgres",
+                password="postgres",
+                host="localhost",
+                port="5432",
+                database=self.DATABASE
+            )
+
+            # Create a cursor
+            cursor = connection.cursor()
+
+            # Define the PostgreSQL INSERT statement
+            postgres_insert_query = "INSERT INTO sensor_data_temp (timestamp, temperature) VALUES (%s, %s)"
+            
+            # Insert data into the PostgreSQL table
+            record_to_insert = (timestamp, temperature)
+            cursor.execute(postgres_insert_query, record_to_insert)
+
+            # Commit the changes to the database
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Record inserted successfully into sensor_data table_temp")
+        except Exception as e:
+            # To implement
+            pass        
 
 if __name__ == "__main__":
     main = Main(
