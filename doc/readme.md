@@ -18,7 +18,7 @@
 
 ### Modification des variables du code source
 
-<p align="justify">Pour faire marcher le projet, nous avions premièrement changer les variables du code source. Ces variables étaient `"HOST"` (le url pour accéder à la simulation), `"TOKEN"` (le token donné par le chargé de laboratoire pour avoir accès aux données), `"T_MAX"` (la température maximum, en degré celsius, avant que l'air climatisé (AC) embarque), `"T_MIN"` (la température minimum, en degré celsius, avant que le chauffage embarque) et `"DATABASE"` (la base de données utilisée pour stocker les données de la simulation).</p>
+<p align="justify">Pour faire marcher le projet, nous avions premièrement changer les variables du code source. Ces variables étaient `HOST` (le url pour accéder à la simulation), `TOKEN` (le token donné par le chargé de laboratoire pour avoir accès aux données), `T_MAX` (la température maximum, en degré celsius, avant que l'air climatisé (AC) embarque), `T_MIN` (la température minimum, en degré celsius, avant que le chauffage embarque) et `DATABASE` (la base de données utilisée pour stocker les données de la simulation).</p>
 
 ![image](./variables.png)
 
@@ -26,11 +26,11 @@
 
 ### Ajout de la base de données du code source
 
-Pour faire marcher la base de données, veuillez premièrement installer psycopg2 : 
+Pour faire marcher la base de données, veuillez premièrement installer [psycopg2](https://pypi.org/project/psycopg2/) : 
 ```
 pip install psycopg2-binary
 ```
-<p align="justify">Pour enregistrer les données de la simulation, nous avons choisi de prendre la même base de données pour le premier laboratoire. De plus, nous avons créer 2 tables pour supporter celles-ci, pour accéder et/ou modifier les tables, se référer aux projet https://github.com/pjbeltran/metrics-grp1-eq23-a23/tree/develop dans les fichiers pour la bd https://github.com/pjbeltran/metrics-grp1-eq23-a23/blob/develop/oxygen/src/bd/create-tables.ts#L17 </p>
+<p align="justify">Pour enregistrer les données de la simulation, nous avons choisi de prendre la même base de données pour le premier laboratoire. De plus, nous avons créer 2 tables pour supporter celles-ci, pour accéder et/ou modifier les tables, se référer aux projet https://github.com/pjbeltran/metrics-grp1-eq23-a23/tree/develop/ dans les fichiers pour la bd https://github.com/pjbeltran/metrics-grp1-eq23-a23/blob/develop/oxygen/src/bd/create-tables.ts#L17 </p>
 
 <p align="justify">La décision de séparer les données en 2 tables a été faite afin de facilité l'affichage graphique des données lors des prochains laboratoire avec Grafana. Pour faire rouler l'application, premièrement inscrire cette commande `pipenv install` pour s'assurer d'avoir les dépendances du projet requises et `pipenv run start` pour faire marcher la simulation.</p>
 
@@ -51,7 +51,11 @@ Prendre note que les captures d'écran pour les tables de la base de données ne
 
 ### Tests et modification
 
+<p align="justify">Pour ce qui est des tests, nous avons opter pour [pytest](https://docs.pytest.org/en/7.4.x/) pour effectuer ceux-ci. Les tests consistent de s'assurer que lorsque nous créons le `main`. Nous testons si les variable `HOST`, `TOKEN`, `T_MAX`, `T_MIN` et `DATABASE` sont les bonnes.</p>
 
+![image](./tests.png)
+
+<p align="justify">Ensuite, pour rouler les tests, il suffit de faire la commande `pytest test.py`. Le fichier `test.py` est le nom du fichier de tests et il est **important de se situer dans le répertoire de test avant de lancer la commande.**</p>
 
 ## Intégration continue
 
