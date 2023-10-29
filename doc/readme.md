@@ -23,6 +23,8 @@ Pour faire marcher le projet, nous avions premièrement changer les variables du
 
 ![image](./variables.png)
 
+Nous avons décidé de choisir `30` comme température maximale et `18` comme température minimale. Ce choix a été fait en prenant compte des températures moyenne du Québec en 2023.
+
 ### Ajout de la base de données du code source
 
 Pour faire marcher la base de données, veuillez premièrement installer psycopg2 : 
