@@ -16,6 +16,10 @@ class Main:
         self.T_MIN = t_min
         self.DATABASE = database
 
+    def __del__(self):
+        if self._hub_connection != None:
+            self._hub_connection.stop()    
+
     def setup(self):
         """Setup Oxygen CS."""
         self.set_sensorhub()
