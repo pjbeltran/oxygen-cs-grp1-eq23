@@ -67,7 +67,7 @@ class Main:
         """Callback method to handle sensor data on reception."""
         try:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
-            # date = data[0]["date"] -> TODO à utiliser
+            date = data[0]["date"]
             temperature = float(data[0]["data"])
             self.take_action(temperature, date)
         except Exception as err:
