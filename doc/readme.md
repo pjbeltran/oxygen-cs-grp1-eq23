@@ -54,14 +54,15 @@ La deuxième table intilutée `sensor_data_temp` sert à stocker **TOUTES** les 
 
 <p align="justify">La même démarche que dans le laboratoire 1 pour faire refaire la base de données et les tables sont nécessaire pour faire marcher l'application : https://github.com/pjbeltran/metrics-grp1-eq23-a23/tree/develop#base-de-données </p>
 
-Prendre note que les captures d'écran pour les tables de la base de données ne correspondent pas à 100% à l'image de l'application qui marche.
-
+**Prendre note que les captures d'écran pour les tables de la base de données ne correspondent pas à 100% à l'image de l'application qui marche.**
 
 ### Tests et modification
 
-<p align="justify">Pour ce qui est des tests, nous avons opter pour [pytest](https://docs.pytest.org/en/7.4.x/) pour effectuer ceux-ci. Les tests consistent de s'assurer que lorsque nous créons le `main`. Nous testons si les variable `HOST`, `TOKEN`, `T_MAX`, `T_MIN` et `DATABASE` sont les bonnes.</p>
+<p align="justify">Pour ce qui est des tests, nous avons opter pour https://docs.pytest.org/en/7.4.x/ (pytest) pour effectuer ceux-ci. Les tests consistent de s'assurer que lorsque nous créons le `main`. Nous testons si les variable `HOST`, `TOKEN`, `T_MAX`, `T_MIN` et `DATABASE` sont les bonnes.</p>
 
-![image](./tests.png)
+<p align="center">
+  <img src="./tests.png" width="400" height="600">
+</p>
 
 <p align="justify">Ensuite, pour rouler les tests, il suffit de faire la commande `pytest test.py`. Le fichier `test.py` est le nom du fichier de tests et il est <b>important de se situer dans le répertoire de test avant de lancer la commande.</b></p>
 
