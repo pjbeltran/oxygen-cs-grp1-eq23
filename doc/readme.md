@@ -55,7 +55,7 @@ Prendre note que les captures d'écran pour les tables de la base de données ne
 
 ![image](./tests.png)
 
-<p align="justify">Ensuite, pour rouler les tests, il suffit de faire la commande `pytest test.py`. Le fichier `test.py` est le nom du fichier de tests et il est **important de se situer dans le répertoire de test avant de lancer la commande.**</p>
+<p align="justify">Ensuite, pour rouler les tests, il suffit de faire la commande `pytest test.py`. Le fichier `test.py` est le nom du fichier de tests et il est <b>important de se situer dans le répertoire de test avant de lancer la commande.</b></p>
 
 ## Intégration continue
 
