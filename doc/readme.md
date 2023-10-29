@@ -20,9 +20,18 @@
 
 <p align="justify">Pour faire marcher le projet, nous avions premièrement changer les variables du code source. Ces variables étaient `HOST` (le url pour accéder à la simulation), `TOKEN` (le token donné par le chargé de laboratoire pour avoir accès aux données), `T_MAX` (la température maximum, en degré celsius, avant que l'air climatisé (AC) embarque), `T_MIN` (la température minimum, en degré celsius, avant que le chauffage embarque) et `DATABASE` (la base de données utilisée pour stocker les données de la simulation).</p>
 
-<p align="center">
-  <img src="./variables.png" width="650" height="300">
-</p>
+```python
+if __name__ == "__main__":
+    main = Main(
+        host="https://hvac-simulator-a23-y2kpq.ondigitalocean.app",
+        token="WeVCNw8DOZ",
+        tickets=2,
+        t_max=30,
+        t_min=18,
+        database="log680",
+    )
+    main.start()
+```
 
 <p align="justify">Nous avons décidé de choisir `30` comme température maximale et `18` comme température minimale. Ce choix a été fait en prenant compte des températures moyenne du Québec en 2023.</p>
 
@@ -60,9 +69,19 @@ La deuxième table intilutée `sensor_data_temp` sert à stocker **TOUTES** les 
 
 <p align="justify">Pour ce qui est des tests, nous avons opter pour https://docs.pytest.org/en/7.4.x/ (pytest) pour effectuer ceux-ci. Les tests consistent de s'assurer que lorsque nous créons le `main`. Nous testons si les variable `HOST`, `TOKEN`, `T_MAX`, `T_MIN` et `DATABASE` sont les bonnes.</p>
 
-<p align="center">
-  <img src="./tests.png" width="400" height="600">
-</p>
+```python
+def test_host_variable():
+    mockMain = main.Main(
+        host="test-host",
+        token="test-token",
+        tickets=2,
+        t_max=30,
+        t_min=18,
+        database="test-database"
+    )
+
+    assert "test-host", f"{mockMain.HOST}"
+```
 
 <p align="justify">Ensuite, pour rouler les tests, il suffit de faire la commande `pytest test.py`. Le fichier `test.py` est le nom du fichier de tests et il est <b>important de se situer dans le répertoire de test avant de lancer la commande.</b></p>
 
