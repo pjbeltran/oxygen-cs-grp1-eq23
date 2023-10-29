@@ -20,7 +20,9 @@
 
 <p align="justify">Pour faire marcher le projet, nous avions premièrement changer les variables du code source. Ces variables étaient `HOST` (le url pour accéder à la simulation), `TOKEN` (le token donné par le chargé de laboratoire pour avoir accès aux données), `T_MAX` (la température maximum, en degré celsius, avant que l'air climatisé (AC) embarque), `T_MIN` (la température minimum, en degré celsius, avant que le chauffage embarque) et `DATABASE` (la base de données utilisée pour stocker les données de la simulation).</p>
 
-![image](./variables.png)
+<p align="center">
+  <img src="./variables.png" width="650" height="300">
+</p>
 
 <p align="justify">Nous avons décidé de choisir `30` comme température maximale et `18` comme température minimale. Ce choix a été fait en prenant compte des températures moyenne du Québec en 2023.</p>
 
@@ -34,15 +36,21 @@ pip install psycopg2-binary
 
 <p align="justify">La décision de séparer les données en 2 tables a été faite afin de facilité l'affichage graphique des données lors des prochains laboratoire avec Grafana. Pour faire rouler l'application, premièrement inscrire cette commande `pipenv install` pour s'assurer d'avoir les dépendances du projet requises et `pipenv run start` pour faire marcher la simulation.</p>
 
-![image](./app_start.png)
+<p align="center">
+  <img src="./app_start.png" width="650" height="300">
+</p>
 
 <p align="justify">La première table intitulée `sensor_data_event` sert à stocker les données (date et l'événement) lorsque la température est au-dessous de `18` degré celsius ou au-dessus de `30` degrés celsius.</p>
 
-![image](./event.png)
+<p align="center">
+  <img src="./event.png" width="400" height="600">
+</p>
 
 La deuxième table intilutée `sensor_data_temp` sert à stocker **TOUTES** les données (date et température) que la simulation capte.
 
-![image](./temp.png)
+<p align="center">
+  <img src="./temp.png" width="400" height="600">
+</p>
 
 <p align="justify">La même démarche que dans le laboratoire 1 pour faire refaire la base de données et les tables sont nécessaire pour faire marcher l'application : https://github.com/pjbeltran/metrics-grp1-eq23-a23/tree/develop#base-de-données </p>
 
