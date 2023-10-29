@@ -17,8 +17,8 @@ class Main:
         self.DATABASE = database
 
     def __del__(self):
-        if self._hub_connection != None:
-            self._hub_connection.stop()    
+        if self._hub_connection is not None:
+            self._hub_connection.stop()
 
     def setup(self):
         """Setup Oxygen CS."""
@@ -67,7 +67,7 @@ class Main:
         """Callback method to handle sensor data on reception."""
         try:
             print(data[0]["date"] + " --> " + data[0]["data"], flush=True)
-            date = data[0]["date"]
+            # date = data[0]["date"] -> TODO à utiliser
             temperature = float(data[0]["data"])
             self.take_action(temperature, date)
         except Exception as err:
@@ -122,6 +122,10 @@ class Main:
         except Exception as e:
             # To implement
             pass
+        except requests.exceptions.RequestException as e:
+            # To implement
+            print(e, flush=True)
+            pass
 
     def send_event_to_database_temp(self, timestamp, temperature):
         """Save sensor data into the database."""
@@ -160,6 +164,6 @@ if __name__ == "__main__":
         tickets=2,
         t_max=30,
         t_min=18,
-        database="log680"
+        database="log680",
     )
     main.start()
