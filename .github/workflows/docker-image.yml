@@ -16,10 +16,15 @@ jobs:
     - name: Set up Docker
       run: docker --version
 
+    - name: Generate Date Tag
+      id: date-tag
+      run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"  
+
     - name: Build Docker image
       run: |
+        TAG=${{ steps.date-tag.outputs.tag }}
         docker build -t pjbeltran/hvac:${GITHUB_RUN_ID} .
-        docker tag pjbeltran/hvac:${GITHUB_RUN_ID} pjbeltran/hvac:latest
+        docker tag pjbeltran/hvac:${GITHUB_RUN_ID} pjbeltran/hvac:latest pjbeltran/hvac:${TAG} 
       env:
         GITHUB_RUN_ID: ${{ github.run_id }}
 
@@ -27,5 +32,8 @@ jobs:
       run: echo dckr_pat_lXwAYVQW8Wrr4y4BOG6AW2pOMYU | docker login -u pjbeltran --password-stdin
 
     - name: Push Docker image
-      run: docker push pjbeltran/hvac:latest
+      run: |
+        TAG=${{ steps.date-tag.outputs.tag }}
+        docker push pjbeltran/hvac:latest
+        docker push pjbeltran/hvac:${TAG}
 
