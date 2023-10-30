@@ -6,7 +6,7 @@ on:
       - test-for-workflow 
   pull_request:
     branches:
-      - develop  
+      - test-for-workflow 
 
 jobs:
   build:
