@@ -21,21 +21,20 @@ jobs:
       with:
         python-version: 3.8  # Adjust the Python version as needed
 
+    - name: Install pipenv
+      run: pip install pipenv
+
     - name: Install dependencies
-      run: pipenv install
+      run: pipenv install --dev --deploy --ignore-pipfile
 
     - name: Run unit tests
-      run: python -m unittest discover
+      run: pipenv run python -m unittest discover
       continue-on-error: false
 
     - name: Static code analysis
-      run: |
-        pip install flake8
-        flake8
+      run: pipenv run flake8
       continue-on-error: false
 
     - name: Code formatting
-      run: |
-        pip install black
-        black . --check
+      run: pipenv run black . --check
       continue-on-error: false
