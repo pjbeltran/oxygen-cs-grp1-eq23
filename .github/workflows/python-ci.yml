@@ -27,6 +27,9 @@ jobs:
     - name: Install pytest
       run: pip install pytest
 
+    - name: Install signalrcore
+      run: pip install signalrcore
+
     - name: Install dependencies
       run: pipenv install --dev --deploy --ignore-pipfile
 
