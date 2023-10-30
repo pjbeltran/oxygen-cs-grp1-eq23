@@ -5,6 +5,7 @@ import json
 import time
 import psycopg2
 
+
 class Main:
     def __init__(self, host, token, tickets, t_max, t_min, database):
         """Initialize with environment variables and provided values."""
@@ -99,7 +100,7 @@ class Main:
                 password="postgres",
                 host="localhost",
                 port="5432",
-                database=self.DATABASE
+                database=self.DATABASE,
             )
 
             # save temp
@@ -109,8 +110,10 @@ class Main:
             cursor = connection.cursor()
 
             # Define the PostgreSQL INSERT statement
-            postgres_insert_query = "INSERT INTO sensor_data_event (timestamp, event) VALUES (%s, %s)"
-            
+            postgres_insert_query = (
+                "INSERT INTO sensor_data_event (timestamp, event) VALUES (%s, %s)"
+            )
+
             # Insert data into the PostgreSQL table
             record_to_insert = (timestamp, event)
             cursor.execute(postgres_insert_query, record_to_insert)
@@ -136,15 +139,17 @@ class Main:
                 password="postgres",
                 host="localhost",
                 port="5432",
-                database=self.DATABASE
+                database=self.DATABASE,
             )
 
             # Create a cursor
             cursor = connection.cursor()
 
             # Define the PostgreSQL INSERT statement
-            postgres_insert_query = "INSERT INTO sensor_data_temp (timestamp, temperature) VALUES (%s, %s)"
-            
+            postgres_insert_query = (
+                "INSERT INTO sensor_data_temp (timestamp, temperature) VALUES (%s, %s)"
+            )
+
             # Insert data into the PostgreSQL table
             record_to_insert = (timestamp, temperature)
             cursor.execute(postgres_insert_query, record_to_insert)
@@ -155,7 +160,8 @@ class Main:
             print(count, "Record inserted successfully into sensor_data table_temp")
         except Exception as e:
             # To implement
-            pass        
+            pass
+
 
 if __name__ == "__main__":
     main = Main(
