@@ -1,0 +1,33 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      run: docker --version
+
+    - name: Build Docker image
+      run: |
+        docker build -t your-image-name:${GITHUB_RUN_ID} .
+        docker tag your-image-name:${GITHUB_RUN_ID} your-image-name:latest
+      env:
+        GITHUB_RUN_ID: ${{ github.run_id }}
+
+    - name: Log into Docker Hub
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Push Docker image
+      run: docker push your-image-name:latest
