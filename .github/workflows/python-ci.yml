@@ -1,0 +1,41 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - test  # Change this to your main branch
+  pull_request:
+    branches:
+      - test  # Change this to your main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8  # Adjust the Python version as needed
+
+    - name: Install dependencies
+      run: pipenv install
+
+    - name: Run unit tests
+      run: python -m unittest discover
+      continue-on-error: false
+
+    - name: Static code analysis
+      run: |
+        pip install flake8
+        flake8
+      continue-on-error: false
+
+    - name: Code formatting
+      run: |
+        pip install black
+        black . --check
+      continue-on-error: false
