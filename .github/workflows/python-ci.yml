@@ -28,7 +28,8 @@ jobs:
       run: pipenv install --dev --deploy --ignore-pipfile
 
     - name: Run unit tests
-      run: pipenv run python -m unittest discover
+      working-directory: ./test
+      run: pytest test.py
       continue-on-error: false
 
     - name: Static code analysis
