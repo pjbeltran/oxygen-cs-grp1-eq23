@@ -27,4 +27,4 @@ jobs:
       run: echo dckr_pat_lXwAYVQW8Wrr4y4BOG6AW2pOMYU | docker login -u pjbeltran --password-stdin
 
     - name: Push Docker image
-      run: docker push pjbeltran/hvac:latest
+      run: docker push hvac:latest
