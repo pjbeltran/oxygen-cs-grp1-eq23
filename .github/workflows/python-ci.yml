@@ -1,12 +1,9 @@
 name: Python CI
 
 on:
-  push:
-    branches:
-      - test  # Change this to your main branch
   pull_request:
     branches:
-      - test  # Change this to your main branch
+      - develop  # Change this to your main branch
 
 jobs:
   build:
