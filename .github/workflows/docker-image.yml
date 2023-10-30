@@ -23,10 +23,8 @@ jobs:
     - name: Build Docker image
       run: |
         TAG=${{ steps.date-tag.outputs.tag }}
-        docker build -t pjbeltran/hvac:${GITHUB_RUN_ID} -t pjbeltran/hvac:${TAG} .
-        docker tag pjbeltran/hvac:${GITHUB_RUN_ID} pjbeltran/hvac:latest pjbeltran/hvac:${TAG}
-      env:
-        GITHUB_RUN_ID: ${{ github.run_id }}
+        docker build -t pjbeltran/hvac:latest -t pjbeltran/hvac:${TAG} .
+        docker tag pjbeltran/hvac:latest pjbeltran/hvac:${TAG}
 
     - name: Log into Docker Hub
       run: echo dckr_pat_lXwAYVQW8Wrr4y4BOG6AW2pOMYU | docker login -u pjbeltran --password-stdin
