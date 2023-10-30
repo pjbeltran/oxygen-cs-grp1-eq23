@@ -1,9 +1,9 @@
-name: Python CI
+name: Docker Build
 
 on:
-  pull_request:
+  push:
     branches:
-      - develop  # Change this to your main branch
+      - main
 
 jobs:
   build:
@@ -13,35 +13,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8  # Adjust the Python version as needed
+    - name: Set up Docker
+      run: docker --version
 
-    - name: Install pipenv
-      run: pip install pipenv
+    - name: Build Docker image
+      run: |
+        docker build -t your-image-name:${GITHUB_RUN_ID} .
+        docker tag your-image-name:${GITHUB_RUN_ID} your-image-name:latest
+      env:
+        GITHUB_RUN_ID: ${{ github.run_id }}
 
-    - name: Install pytest
-      run: pip install pytest
+    - name: Log into Docker Hub
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Install signalrcore
-      run: pip install signalrcore
-
-    - name: Install psycopg2
-      run: pip install psycopg2
-
-    - name: Install dependencies
-      run: pipenv install --dev --deploy --ignore-pipfile
-
-    - name: Run unit tests
-      working-directory: ./test
-      run: pytest test.py
-      continue-on-error: false
-
-    - name: Static code analysis
-      run: pipenv run flake8
-      continue-on-error: true
-
-    - name: Code formatting
-      run: pipenv run black . --check
-      continue-on-error: true
+    - name: Push Docker image
+      run: docker push your-image-name:latest
