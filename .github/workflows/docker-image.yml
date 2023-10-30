@@ -1,0 +1,33 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      run: docker --version
+
+    - name: Build Docker image
+      run: |
+        docker build -t hvac:${GITHUB_RUN_ID} .
+        docker tag hvac:${GITHUB_RUN_ID} hvac:latest
+      env:
+        GITHUB_RUN_ID: ${{ github.run_id }}
+
+    - name: Log into Docker Hub
+      run: echo ${{ secrets.Log680Grp23 }} | docker login -u ${{ secrets.pjbeltran }} --password-stdin
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Push Docker image
+      run: docker push hvac:latest
