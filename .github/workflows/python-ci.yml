@@ -1,0 +1,50 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - test
+  pull_request:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8  
+
+    - name: Install pipenv
+      run: pip install pipenv
+
+    - name: Install pytest
+      run: pip install pytest
+
+    - name: Install signalrcore
+      run: pip install signalrcore
+
+    - name: Install psycopg2
+      run: pip install psycopg2
+
+    - name: Install dependencies
+      run: pipenv install --dev --deploy --ignore-pipfile
+
+    - name: Run unit tests
+      working-directory: ./test
+      run: pytest test.py
+      continue-on-error: false
+
+    - name: Static code analysis
+      run: pipenv run flake8
+      continue-on-error: true
+
+    - name: Code formatting
+      run: pipenv run black . --check
+      continue-on-error: true
