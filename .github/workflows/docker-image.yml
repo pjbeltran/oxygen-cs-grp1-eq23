@@ -23,8 +23,8 @@ jobs:
     - name: Build Docker image
       run: |
         TAG=${{ steps.date-tag.outputs.tag }}
-        docker build -t pjbeltran/hvac:${GITHUB_RUN_ID} .
-        docker tag pjbeltran/hvac:${GITHUB_RUN_ID} pjbeltran/hvac:latest pjbeltran/hvac:${TAG} 
+        docker build -t pjbeltran/hvac:${GITHUB_RUN_ID} -t pjbeltran/hvac:${TAG} .
+        docker tag pjbeltran/hvac:${GITHUB_RUN_ID} pjbeltran/hvac:latest pjbeltran/hvac:${TAG}
       env:
         GITHUB_RUN_ID: ${{ github.run_id }}
 
