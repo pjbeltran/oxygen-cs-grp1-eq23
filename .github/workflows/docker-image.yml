@@ -24,10 +24,7 @@ jobs:
         GITHUB_RUN_ID: ${{ github.run_id }}
 
     - name: Log into Docker Hub
-      run: echo ${{ secrets.dckr_pat_lXwAYVQW8Wrr4y4BOG6AW2pOMYU }} | sudo docker login -u ${{ secrets.pjbeltran }} -p
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+      run: echo dckr_pat_lXwAYVQW8Wrr4y4BOG6AW2pOMYU | docker login ghcr.io -u pjbeltran --password-stdin
 
     - name: Push Docker image
       run: docker push hvac:latest
