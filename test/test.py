@@ -57,6 +57,3 @@ def test_T_MIN_variable():
     )
 
     assert 18, f"{mockMain.T_MIN}"       
-
-if __name__ == '__main__':
-    pytest.main()
