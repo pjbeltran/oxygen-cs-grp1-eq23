@@ -11,8 +11,8 @@ class Main:
         """Initialize with environment variables and provided values."""
         self._hub_connection = None
         self.HOST = host
-        self.TOKEN = "token"
-        self.TICKETS = tickets
+        self.TOKEN = token
+        self.TICKETS = 3
         self.T_MAX = t_max
         self.T_MIN = t_min
         self.DATABASE = database
