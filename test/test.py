@@ -8,7 +8,7 @@ def test_import_main():
         assert "Main" in dir(main)
         print("Import successful.")
     except Exception as e:
-        assert False, f"Import failed: {dir(main.Main)}"                                                           
+        assert False, f"Import failed: {dir(main.Main)}"
 
 def test_host_variable():
     mockMain = main.Main(
