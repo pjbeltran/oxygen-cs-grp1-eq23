@@ -18,6 +18,4 @@ repos:
       types: [python]
       entry: 'pytest test/test.py'
       language: system
-      pass_filenames: false
-      always_run: true
     

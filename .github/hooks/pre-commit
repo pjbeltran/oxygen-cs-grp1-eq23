@@ -2,5 +2,3 @@
 
 flake8 --max-line-length 90 ./src/
 black --check ./src/
-
-pytest test/test.py
