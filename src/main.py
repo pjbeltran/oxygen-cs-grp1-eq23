@@ -12,7 +12,7 @@ class Main:
         self._hub_connection = None
         self.HOST = host
         self.TOKEN = token
-        self.TICKETS = 3
+        self.TICKETS = tickets
         self.T_MAX = t_max
         self.T_MIN = t_min
         self.DATABASE = database
