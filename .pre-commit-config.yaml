@@ -16,6 +16,6 @@ repos:
       name: pytest-check
       stages: [commit]
       types: [python]
-      entry: 'pytest test/test.py'
+      entry: pytest test/test.py
       language: system
     
