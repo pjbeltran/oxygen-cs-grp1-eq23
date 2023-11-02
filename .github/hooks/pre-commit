@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-flake8 --max-line-length 90 ./src/
-black --check ./src/
