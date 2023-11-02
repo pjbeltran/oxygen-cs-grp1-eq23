@@ -123,6 +123,7 @@ class Main:
             count = cursor.rowcount
             print(count, "Record inserted successfully into sensor_data_event table")
         except requests.exceptions.RequestException as e:
+            print(e, flush=True)
             pass
         except Exception as e:
             print(e, flush=True)
