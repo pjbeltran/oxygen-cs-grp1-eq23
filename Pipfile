@@ -18,5 +18,5 @@ python_version = "3.8"
 
 [scripts]
 start = "python src/main.py"
-test = "pytest"
+test = "pytest test/test.py"
 lint = "python -m black src/"

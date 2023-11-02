@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../src')
 
-import main
+import src.main as main
 
 def test_import_main():
     try:
