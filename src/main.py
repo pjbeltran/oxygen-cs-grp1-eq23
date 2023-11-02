@@ -50,7 +50,7 @@ class Main:
             )
             .build()
         )
-
+        # Subscribe to sensor data events Subscribe to sensor data events Subscribe to sensor data events Subscribe to sensor data eventsSubscribe to sensor data eventsSubscribe to sensor data eventsSubscribe to sensor data eventsSubscribe to sensor data eventsSubscribe to sensor data events
         self._hub_connection.on("ReceiveSensorData", self.on_sensor_data_received)
         self._hub_connection.on_open(
             lambda: print("||| Connection opened.", flush=True)
