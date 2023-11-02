@@ -51,6 +51,7 @@ class Main:
             .build()
         )
 
+        # Connections
         self._hub_connection.on("ReceiveSensorData", self.on_sensor_data_received)
         self._hub_connection.on_open(
             lambda: print("||| Connection opened.", flush=True)
