@@ -6,7 +6,7 @@ import time
 import psycopg2
 
 
-# jsbdojsdfbgsjbfpksfbkspfbvknsfvpksfnl[dfnvkpsfnvsfbvkand[lvdnvadsmvnas[dlv,a;dlmanpofjah iogjspgijnargvonirgirnmg,iamjcgpoijgmc,igmoiva]]]
+# jsbdojsdfbgsjbfpksfbkspfbvknsfvpksfnl[dfnvkpsfnvsfbvkand[lvdnvadsmvnas[dlv,a;dlmanpofjah iogjspgijnargvonirgirnmg,iamjcgpoijgmcdshfoisfdgigmoiva]]]
 class Main:
     def __init__(self, host, token, tickets, t_max, t_min, database):
         """Initialize with environment variables and provided values."""
