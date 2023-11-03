@@ -43,7 +43,7 @@ You need to setup the following variables inside the Main class:
 After setup, you can start the program with the following command:
 
 ```
-pipenv run strart
+pipenv run start
 ```
 
 ## Logging

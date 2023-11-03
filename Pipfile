@@ -8,11 +8,15 @@ requests = "*"
 signalrcore = "*"
 
 [dev-packages]
+pre-commit = "*"
+flake8 = "*"
+black = "*"
+
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 start = "python src/main.py"
-test = "# To implement"
-lint = "# To implement"
+test = "pytest test/test.py"
+lint = "python -m black src/"
