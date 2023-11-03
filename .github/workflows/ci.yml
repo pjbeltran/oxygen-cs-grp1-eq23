@@ -2,11 +2,6 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
@@ -19,7 +14,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8  
+        python-version: 3.8
 
     - name: Install pipenv
       run: pip install pipenv
@@ -42,12 +37,12 @@ jobs:
       continue-on-error: false
 
     - name: Static code analysis
-      run: pipenv run flake8
-      continue-on-error: true
+      run: pipenv run flake8 --max-line-length=90
+      continue-on-error: false
 
     - name: Code formatting
       run: pipenv run black . --check
-      continue-on-error: true
+      continue-on-error: false
 
   docker-build:
     runs-on: ubuntu-latest
@@ -62,7 +57,7 @@ jobs:
 
     - name: Generate Date Tag
       id: date-tag
-      run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"  
+      run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
 
     - name: Build Docker image
       run: |
@@ -71,9 +66,11 @@ jobs:
         docker tag pjbeltran/hvac:latest pjbeltran/hvac:${TAG}
 
     - name: Log into Docker Hub
+      if: github.ref == 'refs/heads/main'
       run: echo dckr_pat_lXwAYVQW8Wrr4y4BOG6AW2pOMYU | docker login -u pjbeltran --password-stdin
 
     - name: Push Docker image
+      if: github.ref == 'refs/heads/main'
       run: |
         TAG=${{ steps.date-tag.outputs.tag }}
         docker push pjbeltran/hvac:latest
