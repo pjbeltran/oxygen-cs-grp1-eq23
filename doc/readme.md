@@ -2,17 +2,20 @@
 
 # Table des matières 
 
-- [Oxygen-CS](#oxygen-cs)
-  - [Modification des variables du code source](#modification-des-variables-du-code-source)
-  - [Ajout de la base de données du code source](#ajout-de-la-base-de-données-du-code-source)
-  - [Tests et modification](#tests-et-modification)
-- [Intégration continue](#intégration-continue)
-  - [Création d'image Docker Metrics](#création-dimage-docker-metrics)
-  - [Création d'image Docker HVAC optimisée](#création-dimage-docker-hvac-optimisée)
-  - [Pipeline repository Metrics](#pipeline-repository-metrics)
-  - [Pipeline repository HVAC](#pipeline-repository-hvac)
-- [Métriques DevOps](#métriques-devops)
-  - [Métriques CI](#métriques-ci)
+- [oxygen-cs-grp1-eq23](#oxygen-cs-grp1-eq23)
+- [Table des matières](#table-des-matières)
+  - [Oxygen-CS](#oxygen-cs)
+    - [Modification des variables du code source](#modification-des-variables-du-code-source)
+    - [Ajout de la base de données du code source](#ajout-de-la-base-de-données-du-code-source)
+    - [Tests et modification](#tests-et-modification)
+  - [Intégration continue](#intégration-continue)
+    - [Pre-commit git hook](#pre-commit-git-hook)
+    - [Création d'image Docker Metrics et HVAC optimisée](#création-dimage-docker-metrics-et-hvac-optimisée)
+    - [Création d'image Docker HVAC optimisée](#création-dimage-docker-hvac-optimisée)
+    - [Pipeline repository Metrics](#pipeline-repository-metrics)
+    - [Pipeline repository HVAC](#pipeline-repository-hvac)
+  - [Métriques DevOps](#métriques-devops)
+    - [Métriques CI](#métriques-ci)
  
 ## Oxygen-CS
 
@@ -87,7 +90,17 @@ def test_host_variable():
 
 ## Intégration continue
 
-### Création d'image Docker Metrics
+### Pre-commit git hook
+
+Un pre-commit git hook a été mis en place pour assurer la qualité du code. Pour cela nous avons du définir des conventions de code pour avoir une uniformité du code, détecter des erreurs et problèmes potentiels et à améliorer la qualité du code. Pour le moment, il a été décidé de mettre, en plus des standards par defaut, comme l'ajout d'un espace à la fin d'un fichier, un nombre maximun de colonne sur une ligne de code. 
+On a également défini une analyse statique de code et de formatage dans le pre-commit, cela permet de garantir une constitance du code. Il a été décidé de laisser la configuration minimale déjà en place par le framework.
+Pour le projet python, pour le lint, il a été décidé de d'implémenter flake8 pour ça facilité d'implémentation et pour l'analyse statique et de formatage, black a été choisis pour sa facilité d'implémentation et pour la configuration minimal déjà en place.
+
+Les test unitaires ont été ajouté à ce pre-commit git hook, pour vérifier que tous les tests passent bien avant de faire un commit.
+
+### Création d'image Docker Metrics et HVAC optimisée
+
+Avant de 
 
 ### Création d'image Docker HVAC optimisée
 
