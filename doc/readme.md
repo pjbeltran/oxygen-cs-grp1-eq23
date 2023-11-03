@@ -1,19 +1,20 @@
 # oxygen-cs-grp1-eq23
 
-# Table des matières 
+# Table des matières
 
-- [Oxygen-CS](#oxygen-cs)
-  - [Modification des variables du code source](#modification-des-variables-du-code-source)
-  - [Ajout de la base de données du code source](#ajout-de-la-base-de-données-du-code-source)
-  - [Tests et modification](#tests-et-modification)
-- [Intégration continue](#intégration-continue)
-  - [Création d'image Docker Metrics](#création-dimage-docker-metrics)
-  - [Création d'image Docker HVAC optimisée](#création-dimage-docker-hvac-optimisée)
-  - [Pipeline repository Metrics](#pipeline-repository-metrics)
-  - [Pipeline repository HVAC](#pipeline-repository-hvac)
-- [Métriques DevOps](#métriques-devops)
-  - [Métriques CI](#métriques-ci)
- 
+- [oxygen-cs-grp1-eq23](#oxygen-cs-grp1-eq23)
+- [Table des matières](#table-des-matières)
+  - [Oxygen-CS](#oxygen-cs)
+    - [Modification des variables du code source](#modification-des-variables-du-code-source)
+    - [Ajout de la base de données du code source](#ajout-de-la-base-de-données-du-code-source)
+    - [Tests et modification](#tests-et-modification)
+  - [Intégration continue](#intégration-continue)
+    - [Création d'image Docker Metrics](#création-dimage-docker-metrics)
+    - [Création d'image Docker HVAC optimisée](#création-dimage-docker-hvac-optimisée)
+    - [Pipeline repository Metrics et HVAC](#pipeline-repository-metrics-et-hvac)
+  - [Métriques DevOps](#métriques-devops)
+    - [Métriques CI](#métriques-ci)
+
 ## Oxygen-CS
 
 ### Modification des variables du code source
@@ -37,7 +38,7 @@ if __name__ == "__main__":
 
 ### Ajout de la base de données du code source
 
-Pour faire marcher la base de données, veuillez premièrement installer [psycopg2](https://pypi.org/project/psycopg2/) : 
+Pour faire marcher la base de données, veuillez premièrement installer [psycopg2](https://pypi.org/project/psycopg2/) :
 ```
 pip install psycopg2-binary
 ```
@@ -91,9 +92,15 @@ def test_host_variable():
 
 ### Création d'image Docker HVAC optimisée
 
-### Pipeline repository Metrics
-
-### Pipeline repository HVAC
+### Pipeline repository Metrics et HVAC
+Dans le projet, nous avons créé deux pipelines CI qui font pratiquement la même affaire. Les seules différences se trouvent au début et vers la fin. Ces pipelines sont exécuté sur le push et pull request de toutes les branches. Cependant, lorsque c'est sur la branche `main` il y a une étape de plus au CI. Les étapes du CI se suivent comme ceci:
+- Nous faisons la vérification du code et les installations des affaires nécessaires en Python pour un des repository et de Node et TypeScript pour l'autre.
+- Nous exécutons les tests présent dans le repository et si les tests ne passent la construction du projet s'arrête avec une erreur.
+- Nous lançons les vérification lint et le formatage du code et s'il y a un problème le pipeline arrête avec une erreur.
+- Nous lançons la création des images docker qui est différente selon le repository de notre CI.
+- `(Seulement sur la branche main)` Nous publions cette image docker sur DockerHub avec 2 tag qui sont:
+  - latest
+  - la date que le CI a été exécuté
 
 ## Métriques DevOps
 
