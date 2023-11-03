@@ -121,3 +121,186 @@ Dans le projet, nous avons créé deux pipelines CI qui font pratiquement la mê
 ## Métriques DevOps
 
 ### Métriques CI
+
+<p align="justify">Nous avons décidé de choisir une nouvelle option pour recueillir les données du CI. En effet, au lieu d'utilisé `Graphql`, nous avons utilisé l'api de GitHub. L'url pour recevoir ces données est celui-ci : https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs. En effet, ce lien affiche toutes les données nécessaires à la cueillete d'informations. Pour ce qui est des métriques, nous avons opté pour ajouter 7 nouvelles métriques pour suivre l'intégration continu. Les voici :</p>
+
+1. http://localhost:3000/api/getBuildsCI : Cette métrique compte le nombre de "workflows" qui ont été lancés.
+
+```typescript
+ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    data=myJson
+    const valueToStore = parseInt(Object.values(data)[0], 10);
+
+    const currentTimestamp = new Date();
+
+    const insertQuery = 'INSERT INTO ci_builds (timestamp, count) VALUES ($1, $2) RETURNING id';
+    const values = [currentTimestamp, valueToStore];
+
+    pool.query(insertQuery, values, (err, result) => {
+      if (err) {
+        console.error('Error inserting data into the database:', err);
+        res.status(500).json({ error: 'Error inserting data into the database' });
+      } else {
+        const insertedId = result.rows[0].id;
+        res.status(200).json(valueToStore);
+      }
+    });
+```
+
+2. http://localhost:3000/api/getBuildsCIAuthor : Cette métrique affiche les noms des développeurs qui ont "trigger" les "workflows" et le nombre de fois.
+
+```typescript
+  await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    var arr = [];
+    for (var key in myJson.workflow_runs){
+      arr.push(myJson.workflow_runs[key].actor.login);
+    }
+
+    const actors = getActorCounts(myJson);
+      insertActorData(actors)
+        .then(() => {
+          res.status(200).json(countOccurrences(arr));
+        })
+        .catch((error) => {
+          console.error('Error inserting data into the database:', error);
+          res.status(500).json({ error: 'Error inserting data into the database' });
+        });
+```
+
+3. http://localhost:3000/api/getBuildsCIAverageTime : Cette métrique calcule la moyenne de temps des "workflows".
+
+```typescript
+  fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    var arr = [];
+    for (var key in myJson.workflow_runs){
+      const date1 = new Date(myJson.workflow_runs[key].updated_at);
+      const date2 = new Date(myJson.workflow_runs[key].created_at);
+
+      const difference = date1.getTime() - date2.getTime();
+
+      const hours = Math.floor(difference / 3600000); 
+      const minutes = Math.floor((difference % 3600000) / 60000); 
+      const seconds = Math.floor((difference % 60000) / 1000); 
+
+      arr.push(`${hours}:${minutes}:${seconds}`);
+    }
+
+    insertAverageTime(calculateAverageTime(arr))
+        .then(() => {
+          return res.status(200).json(calculateAverageTime(arr));
+        })
+        .catch((error) => {
+          console.error('Error inserting data into the database:', error);
+          res.status(500).json({ error: 'Error inserting data into the database' });
+        });
+```
+
+4. http://localhost:3000/api/getBuildsCIConclusion : Cette métrique indique le nombre de "workflows" qui ont passé les tests (success ou failure).
+
+```typescript
+await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    var arr = [];
+    for (var key in myJson.workflow_runs){
+      arr.push(myJson.workflow_runs[key].conclusion);
+    }
+
+    const conclusions = getConclusionCounts(myJson);
+      insertConclusionData(conclusions)
+        .then(() => {
+          res.status(200).json(countOccurrences(arr));
+        })
+        .catch((error) => {
+          console.error('Error inserting data into the database:', error);
+          res.status(500).json({ error: 'Error inserting data into the database' });
+        });
+```
+
+5. http://localhost:3000/api/getBuildsCIEvent : Cette métrique indique l'action qui a "trigger" le workflow à se lancer (push, pull request, etc..).
+
+```typescript
+await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    var arr = [];
+    for (var key in myJson.workflow_runs){
+      arr.push(myJson.workflow_runs[key].event);
+    }
+
+    const events = getEventCounts(myJson);
+      insertEventData(events)
+        .then(() => {
+          res.status(200).json(countOccurrences(arr));
+        })
+        .catch((error) => {
+          console.error('Error inserting data into the database:', error);
+          res.status(500).json({ error: 'Error inserting data into the database' });
+        });
+```
+
+6. http://localhost:3000/api/getBuildsCIName : Cettre métrique indique le nom des "workflows" qui ont éte "trigger" et compte leur occurence.
+
+```typescript
+await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    var arr = [];
+    for (var key in myJson.workflow_runs){
+      arr.push(myJson.workflow_runs[key].name);
+    }
+
+    const names = getNameCounts(myJson);
+      insertNameData(names)
+        .then(() => {
+          res.status(200).json(countOccurrences(arr));
+        })
+        .catch((error) => {
+          console.error('Error inserting data into the database:', error);
+          res.status(500).json({ error: 'Error inserting data into the database' });
+        });
+```
+7. http://localhost:3000/api/getBuildsCIStatus : Cette métrique indique les status des "workflows" qui ont été lancés (completed, etc..).
+
+```typescript
+await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/runs')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    var arr = [];
+    for (var key in myJson.workflow_runs){
+      arr.push(myJson.workflow_runs[key].status);
+    }
+
+    const status = getStatusCounts(myJson);
+      insertStatusData(status)
+        .then(() => {
+          res.status(200).json(countOccurrences(arr));
+        })
+        .catch((error) => {
+          console.error('Error inserting data into the database:', error);
+          res.status(500).json({ error: 'Error inserting data into the database' });
+        });
+```
+
+Nous avons décidé d'ajouter plus de 4 métriques, car celles-ci sont importantes et essentielles pour bien comprendre le déroulement des "workflows" et des tests, permettant ainsi de mieux cibler les contraintes et les goulots d'étranglement. Avec ces dispositifs mis en place, nous aurons donc une bonne télémétrie du projet et de ceux à venir.
+
