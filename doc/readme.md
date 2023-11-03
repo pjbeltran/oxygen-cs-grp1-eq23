@@ -11,7 +11,6 @@
   - [Intégration continue](#intégration-continue)
     - [Pre-commit git hook](#pre-commit-git-hook)
     - [Création d'image Docker Metrics et HVAC optimisée](#création-dimage-docker-metrics-et-hvac-optimisée)
-    - [Création d'image Docker HVAC optimisée](#création-dimage-docker-hvac-optimisée)
     - [Pipeline repository Metrics et HVAC](#pipeline-repository-metrics-et-hvac)
   - [Métriques DevOps](#métriques-devops)
     - [Métriques CI](#métriques-ci)
@@ -91,7 +90,7 @@ def test_host_variable():
 
 ### Pre-commit git hook
 
-Un pre-commit git hook a été mis en place pour assurer la qualité du code. Pour cela nous avons du définir des conventions de code pour avoir une uniformité du code, détecter des erreurs et problèmes potentiels et à améliorer la qualité du code. Pour le moment, il a été décidé de mettre, en plus des standards par defaut, comme l'ajout d'un espace à la fin d'un fichier, un nombre maximun de colonne sur une ligne de code. 
+Un [pre-commit git hook](../.pre-commit-config.yaml) a été mis en place pour assurer la qualité du code. Pour cela nous avons du définir des conventions de code pour avoir une uniformité du code, détecter des erreurs et problèmes potentiels et à améliorer la qualité du code. Pour le moment, il a été décidé de mettre, en plus des standards par defaut, comme l'ajout d'un espace à la fin d'un fichier, un nombre maximun de colonne sur une ligne de code. 
 On a également défini une analyse statique de code et de formatage dans le pre-commit, cela permet de garantir une constitance du code. Il a été décidé de laisser la configuration minimale déjà en place par le framework.
 Pour ce projet python, pour le lint, il a été décidé de d'implémenter flake8 pour ça facilité d'implémentation et pour l'analyse statique et de formatage, black a été choisis pour sa facilité d'implémentation et pour la configuration minimal déjà en place.
 
@@ -99,9 +98,15 @@ Les test unitaires ont été ajouté à ce pre-commit git hook, pour vérifier q
 
 ### Création d'image Docker Metrics et HVAC optimisée
 
-Avant de 
+On devait mettre en place un pipeline pour chacun des projets, [metrics](https://github.com/pjbeltran/metrics-grp1-eq23-a23) et [HVAC](https://github.com/pjbeltran/oxygen-cs-grp1-eq23). Avant de faire cela, il était nécessaire de conteneurisation des applications, donc il y a un Dockerfile a été créé pour chacun des projets, ([ici pour celaui de HVAC](../Dockerfile)).
+Les étapes sont les même pour les deux projets:
+  - On défini l'environnement (python3.8 ou node)
+  - On créé un dossier où notre projet sera copié
+  - On copie les fichiers nécessaire pour le bon fonctionement du projet dans le dossier créé
+  - On installe toutes les dépendances liées à notre projet
+  - On défini la commande qui va executer le projet
 
-### Création d'image Docker HVAC optimisée
+On a essayé de réduire la taille des images docker le plus possible, en chossisant un envrionnement léger (on a choisi l'envrionnement alpine qui est plus léger) et copier seulement les fichiers nécessaire pour projet.
 
 ### Pipeline repository Metrics et HVAC
 Dans le projet, nous avons créé deux pipelines CI qui font pratiquement la même affaire. Les seules différences se trouvent au début et vers la fin. Ces pipelines sont exécuté sur le push et pull request de toutes les branches. Cependant, lorsque c'est sur la branche `main` il y a une étape de plus au CI. Les étapes du CI se suivent comme ceci:
