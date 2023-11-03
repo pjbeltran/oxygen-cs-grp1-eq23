@@ -56,17 +56,11 @@ jobs:
     - name: Set up Docker
       run: docker --version
 
-    - name: Build docker image not tagged
-      if: github.ref != 'refs/heads/main'
-      run: docker build
-
     - name: Generate Date Tag
-      if: github.ref == 'refs/heads/main'
       id: date-tag
       run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
 
     - name: Build Docker image
-      if: github.ref == 'refs/heads/main'
       run: |
         TAG=${{ steps.date-tag.outputs.tag }}
         docker build -t pjbeltran/hvac:latest -t pjbeltran/hvac:${TAG} .
