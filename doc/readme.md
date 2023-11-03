@@ -115,7 +115,7 @@ def test_host_variable():
     const currentTimestamp = new Date();
 
     const insertQuery = 'INSERT INTO ci_builds (timestamp, count) VALUES ($1, $2) RETURNING id';
-    const values = [ currentTimestamp, valueToStore];
+    const values = [currentTimestamp, valueToStore];
 
     pool.query(insertQuery, values, (err, result) => {
       if (err) {
@@ -136,7 +136,6 @@ def test_host_variable():
     return response.json();
   })
   .then(function(myJson) {
-    let a = "";
     var arr = [];
     for (var key in myJson.workflow_runs){
       arr.push(myJson.workflow_runs[key].actor.login);
@@ -161,7 +160,6 @@ def test_host_variable():
     return response.json();
   })
   .then(function(myJson) {
-    let a = "";
     var arr = [];
     for (var key in myJson.workflow_runs){
       const date1 = new Date(myJson.workflow_runs[key].updated_at);
@@ -194,14 +192,13 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
     return response.json();
   })
   .then(function(myJson) {
-    let a = "";
     var arr = [];
     for (var key in myJson.workflow_runs){
       arr.push(myJson.workflow_runs[key].conclusion);
     }
 
-    const actors = getActorCounts(myJson);
-      insertActorData(actors)
+    const conclusions = getConclusionCounts(myJson);
+      insertConclusionData(conclusions)
         .then(() => {
           res.status(200).json(countOccurrences(arr));
         })
@@ -219,14 +216,13 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
     return response.json();
   })
   .then(function(myJson) {
-    let a = "";
     var arr = [];
     for (var key in myJson.workflow_runs){
       arr.push(myJson.workflow_runs[key].event);
     }
 
-    const actors = getActorCounts(myJson);
-      insertActorData(actors)
+    const events = getEventCounts(myJson);
+      insertEventData(events)
         .then(() => {
           res.status(200).json(countOccurrences(arr));
         })
@@ -244,14 +240,13 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
     return response.json();
   })
   .then(function(myJson) {
-    let a = "";
     var arr = [];
     for (var key in myJson.workflow_runs){
       arr.push(myJson.workflow_runs[key].name);
     }
 
-    const actors = getActorCounts(myJson);
-      insertActorData(actors)
+    const names = getNameCounts(myJson);
+      insertNameData(names)
         .then(() => {
           res.status(200).json(countOccurrences(arr));
         })
@@ -268,14 +263,13 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
     return response.json();
   })
   .then(function(myJson) {
-    let a = "";
     var arr = [];
     for (var key in myJson.workflow_runs){
-      arr.push(myJson.workflow_runs[key].name);
+      arr.push(myJson.workflow_runs[key].status);
     }
 
-    const actors = getActorCounts(myJson);
-      insertActorData(actors)
+    const status = getStatusCounts(myJson);
+      insertStatusData(status)
         .then(() => {
           res.status(200).json(countOccurrences(arr));
         })
@@ -284,4 +278,6 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
           res.status(500).json({ error: 'Error inserting data into the database' });
         });
 ```
+
+Nous avons décidé d'ajouter plus de 4 métriques, car celles-ci sont importantes et essentielles pour bien comprendre le déroulement des "workflows" et des tests, permettant ainsi de mieux cibler les contraintes et les goulots d'étranglement. Avec ces dispositifs mis en place, nous aurons donc une bonne télémétrie du projet et de ceux à venir.
 
