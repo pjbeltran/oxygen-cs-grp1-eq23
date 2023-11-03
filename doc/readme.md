@@ -1,6 +1,6 @@
 # oxygen-cs-grp1-eq23
 
-# Table des matières 
+# Table des matières
 
 - [oxygen-cs-grp1-eq23](#oxygen-cs-grp1-eq23)
 - [Table des matières](#table-des-matières)
@@ -12,8 +12,7 @@
     - [Pre-commit git hook](#pre-commit-git-hook)
     - [Création d'image Docker Metrics et HVAC optimisée](#création-dimage-docker-metrics-et-hvac-optimisée)
     - [Création d'image Docker HVAC optimisée](#création-dimage-docker-hvac-optimisée)
-    - [Pipeline repository Metrics](#pipeline-repository-metrics)
-    - [Pipeline repository HVAC](#pipeline-repository-hvac)
+    - [Pipeline repository Metrics et HVAC](#pipeline-repository-metrics-et-hvac)
   - [Métriques DevOps](#métriques-devops)
     - [Métriques CI](#métriques-ci)
  
@@ -40,7 +39,7 @@ if __name__ == "__main__":
 
 ### Ajout de la base de données du code source
 
-Pour faire marcher la base de données, veuillez premièrement installer [psycopg2](https://pypi.org/project/psycopg2/) : 
+Pour faire marcher la base de données, veuillez premièrement installer [psycopg2](https://pypi.org/project/psycopg2/) :
 ```
 pip install psycopg2-binary
 ```
@@ -94,7 +93,7 @@ def test_host_variable():
 
 Un pre-commit git hook a été mis en place pour assurer la qualité du code. Pour cela nous avons du définir des conventions de code pour avoir une uniformité du code, détecter des erreurs et problèmes potentiels et à améliorer la qualité du code. Pour le moment, il a été décidé de mettre, en plus des standards par defaut, comme l'ajout d'un espace à la fin d'un fichier, un nombre maximun de colonne sur une ligne de code. 
 On a également défini une analyse statique de code et de formatage dans le pre-commit, cela permet de garantir une constitance du code. Il a été décidé de laisser la configuration minimale déjà en place par le framework.
-Pour le projet python, pour le lint, il a été décidé de d'implémenter flake8 pour ça facilité d'implémentation et pour l'analyse statique et de formatage, black a été choisis pour sa facilité d'implémentation et pour la configuration minimal déjà en place.
+Pour ce projet python, pour le lint, il a été décidé de d'implémenter flake8 pour ça facilité d'implémentation et pour l'analyse statique et de formatage, black a été choisis pour sa facilité d'implémentation et pour la configuration minimal déjà en place.
 
 Les test unitaires ont été ajouté à ce pre-commit git hook, pour vérifier que tous les tests passent bien avant de faire un commit.
 
@@ -104,9 +103,15 @@ Avant de
 
 ### Création d'image Docker HVAC optimisée
 
-### Pipeline repository Metrics
-
-### Pipeline repository HVAC
+### Pipeline repository Metrics et HVAC
+Dans le projet, nous avons créé deux pipelines CI qui font pratiquement la même affaire. Les seules différences se trouvent au début et vers la fin. Ces pipelines sont exécuté sur le push et pull request de toutes les branches. Cependant, lorsque c'est sur la branche `main` il y a une étape de plus au CI. Les étapes du CI se suivent comme ceci:
+- Nous faisons la vérification du code et les installations des affaires nécessaires en Python pour un des repository et de Node et TypeScript pour l'autre.
+- Nous exécutons les tests présent dans le repository et si les tests ne passent la construction du projet s'arrête avec une erreur.
+- Nous lançons les vérification lint et le formatage du code et s'il y a un problème le pipeline arrête avec une erreur.
+- Nous lançons la création des images docker qui est différente selon le repository de notre CI.
+- `(Seulement sur la branche main)` Nous publions cette image docker sur DockerHub avec 2 tag qui sont:
+  - latest
+  - la date que le CI a été exécuté
 
 ## Métriques DevOps
 
