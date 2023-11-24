@@ -14,4 +14,4 @@ ENV DATABASE "log680"
 RUN pip install pipenv
 RUN pipenv install
 
-CMD ["python", "main.py"]
+CMD ["pipenv", "run", "python", "/app/main.py"]
