@@ -32,7 +32,7 @@ jobs:
       run: pip install python-dotenv
 
     - name: Install dependencies
-      run: pipenv install
+      run: pipenv install --dev --deploy
 
     - name: Run unit tests
       working-directory: ./test
