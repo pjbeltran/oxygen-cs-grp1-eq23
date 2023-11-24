@@ -4,6 +4,10 @@ import requests
 import json
 import time
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Main:
@@ -164,11 +168,11 @@ class Main:
 
 if __name__ == "__main__":
     main = Main(
-        host="https://hvac-simulator-a23-y2kpq.ondigitalocean.app",
-        token="WeVCNw8DOZ",
-        tickets=2,
-        t_max=30,
-        t_min=18,
-        database="log680",
+        host=os.environ.get("HOST"),
+        token=os.environ.get("TOKEN"),
+        tickets=os.environ.get("TICKETS"),
+        t_max=os.environ.get("T_MAX"),
+        t_min=os.environ.get("T_MIN"),
+        database=os.environ.get("DATABASE"),
     )
     main.start()

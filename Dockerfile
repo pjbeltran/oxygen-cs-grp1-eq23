@@ -2,7 +2,7 @@ FROM python:3.8-alpine
 
 WORKDIR /app
 
-COPY Pipfile Pipfile.lock src /app/
+COPY Pipfile Pipfile.lock src .env /app/
 
 RUN pip install pipenv
 RUN pipenv install
