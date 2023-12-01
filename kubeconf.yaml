@@ -7,7 +7,7 @@ clusters:
 contexts:
 - context:
     cluster: microk8s-cluster
-    namespace: team23-hvac
+    namespace: team23-namespace
     user: team23
   name: microk8s
 current-context: microk8s
