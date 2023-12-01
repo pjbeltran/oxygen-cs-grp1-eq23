@@ -32,3 +32,32 @@ spec:
           - containerPort: 3000
           env:
           - name: HOST
+            valueFrom:
+              configMagKeyRef:
+                name: host
+                key: HOST
+          - name: DATABASE
+            valueFrom:
+              configMagKeyRef:
+                name: database
+                key: DATABASE
+          - name: T_MIN
+            valueFrom:
+              configMagKeyRef:
+                name: tmin
+                key: T_MIN
+          - name: T_MAX
+            valueFrom:
+              configMagKeyRef:
+                name: tmax
+                key: T_MAX
+          - name: TICKETS
+            valueFrom:
+              configMagKeyRef:
+                name: tickets
+                key: TICKETS
+          - name: TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: token
+                key: TOKEN
