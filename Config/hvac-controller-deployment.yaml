@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: hvac-controller-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hvac-controller
+  template:
+    metadata:
+      labels:
+        app: hvac-controller
+    spec:
+      containers:
+      - name: hvac-controller-container
+        image: hvac:latest
+        env:
+        - name: HVAC_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: my-configmap
+              key: HVAC_HOST
+        - name: HVAC_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: hvac-secrets
+              key: HVAC_TOKEN
+        - name: DATABASE_HOST
+          value: database-service # Remplacez par nom du service base de données
+        - name: DATABASE_NAME
+          value: postgres
+        - name: DATABASE_USER
+          value: postgres
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres
