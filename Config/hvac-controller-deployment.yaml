@@ -47,7 +47,7 @@ spec:
               name: token
               key: TOKEN
         - name: DATABASE_HOST
-          value: database-service # Remplacez par nom du service base de données
+          value: database-service
         - name: POSTGRES_DB
           valueFrom:
             configMagKeyRef:
@@ -63,3 +63,8 @@ spec:
             secretKeyRef:
               name: database-credentials
               key: POSTGRES_PASSWORD
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMagKeyRef:
+              name: postgresport
+              key: POSTGRES_PORT

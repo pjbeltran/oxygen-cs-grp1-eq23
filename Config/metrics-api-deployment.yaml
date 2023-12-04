@@ -17,7 +17,7 @@ spec:
         image: metrics:latest
         env:
         - name: DATABASE_HOST
-          value: database-service # Remplacez par nom du service base de données
+          value: database-service
         - name: POSTGRES_DB
           valueFrom:
             configMagKeyRef:

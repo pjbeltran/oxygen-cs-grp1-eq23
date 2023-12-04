@@ -95,17 +95,20 @@ class Main:
         details = json.loads(r.text)
         print(details, flush=True)
 
+    def get_connection(self):
+        return psycopg2.connect(
+            user=os.environ.get("POSTGRES_USER"),
+            password=os.environ.get("POSTGRES_PASSWORD"),
+            host=os.environ.get("DATABASE_HOST"),
+            port=os.environ.get("POSTGRES_PORT"),
+            database=self.DATABASE,
+        )
+
     def send_event_to_database(self, timestamp, event, temperature):
         """Save sensor data into the database."""
         try:
             # Set up the PostgreSQL connection
-            connection = psycopg2.connect(
-                user="postgres",
-                password="postgres",
-                host="localhost",
-                port="5432",
-                database=self.DATABASE,
-            )
+            connection = self.get_connection()
 
             # save temp
             self.send_event_to_database_temp(timestamp, temperature)
@@ -132,18 +135,14 @@ class Main:
         except Exception as e:
             print(e, flush=True)
             pass
+        finally:
+            connection.close()
 
     def send_event_to_database_temp(self, timestamp, temperature):
         """Save sensor data into the database."""
         try:
             # Set up the PostgreSQL connection
-            connection = psycopg2.connect(
-                user="postgres",
-                password="postgres",
-                host="localhost",
-                port="5432",
-                database=self.DATABASE,
-            )
+            connection = self.get_connection()
 
             # Create a cursor
             cursor = connection.cursor()
@@ -164,6 +163,8 @@ class Main:
         except Exception as e:
             print(e, flush=True)
             pass
+        finally:
+            connection.close()
 
 
 if __name__ == "__main__":
