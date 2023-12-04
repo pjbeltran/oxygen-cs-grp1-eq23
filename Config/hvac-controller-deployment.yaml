@@ -16,24 +16,50 @@ spec:
       - name: hvac-controller-container
         image: hvac:latest
         env:
-        - name: HVAC_HOST
+        - name: HOST
           valueFrom:
-            configMapKeyRef:
-              name: my-configmap
-              key: HVAC_HOST
-        - name: HVAC_TOKEN
+            configMagKeyRef:
+              name: host
+              key: HOST
+        - name: DATABASE
+          valueFrom:
+            configMagKeyRef:
+              name: database
+              key: DATABASE
+        - name: T_MIN
+          valueFrom:
+            configMagKeyRef:
+              name: tmin
+              key: T_MIN
+        - name: T_MAX
+          valueFrom:
+            configMagKeyRef:
+              name: tmax
+              key: T_MAX
+        - name: TICKETS
+          valueFrom:
+            configMagKeyRef:
+              name: tickets
+              key: TICKETS
+        - name: TOKEN
           valueFrom:
             secretKeyRef:
-              name: hvac-secrets
-              key: HVAC_TOKEN
+              name: token
+              key: TOKEN
         - name: DATABASE_HOST
           value: database-service # Remplacez par nom du service base de données
-        - name: DATABASE_NAME
-          value: postgres
-        - name: DATABASE_USER
-          value: postgres
-        - name: DATABASE_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            configMagKeyRef:
+              name: postgresdb
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMagKeyRef:
+              name: postgresuser
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: database-credentials
-              key: postgres
+              key: POSTGRES_PASSWORD

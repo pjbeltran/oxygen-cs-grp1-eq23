@@ -18,12 +18,18 @@ spec:
         env:
         - name: DATABASE_HOST
           value: database-service # Remplacez par nom du service base de données
-        - name: DATABASE_NAME
-          value: postgres
-        - name: DATABASE_USER
-          value: postgres
-        - name: DATABASE_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            configMagKeyRef:
+              name: postgresdb
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMagKeyRef:
+              name: postgresuser
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: database-credentials
-              key: postgres
+              key: POSTGRES_PASSWORD
