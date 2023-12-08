@@ -95,16 +95,85 @@ class Main:
         details = json.loads(r.text)
         print(details, flush=True)
 
-    def send_event_to_database(self, timestamp, event):
-        """Save sensor data into database."""
+    def get_connection(self):
+        return psycopg2.connect(
+            user=os.environ.get("POSTGRES_USER"),
+            password=os.environ.get("POSTGRES_PASSWORD"),
+            host=os.environ.get("DATABASE_HOST"),
+            port=os.environ.get("POSTGRES_PORT"),
+            database=self.DATABASE,
+        )
+
+    def send_event_to_database(self, timestamp, event, temperature):
+        """Save sensor data into the database."""
         try:
-            # To implement
-            pass
+            # Set up the PostgreSQL connection
+            connection = self.get_connection()
+
+            # save temp
+            self.send_event_to_database_temp(timestamp, temperature)
+
+            # Create a cursor
+            cursor = connection.cursor()
+
+            # Define the PostgreSQL INSERT statement
+            postgres_insert_query = (
+                "INSERT INTO sensor_data_event (timestamp, event) VALUES (%s, %s)"
+            )
+
+            # Insert data into the PostgreSQL table
+            record_to_insert = (timestamp, event)
+            cursor.execute(postgres_insert_query, record_to_insert)
+
+            # Commit the changes to the database
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Record inserted successfully into sensor_data_event table")
         except requests.exceptions.RequestException as e:
-            # To implement
+            print(e, flush=True)
             pass
+        except Exception as e:
+            print(e, flush=True)
+            pass
+        finally:
+            connection.close()
+
+    def send_event_to_database_temp(self, timestamp, temperature):
+        """Save sensor data into the database."""
+        try:
+            # Set up the PostgreSQL connection
+            connection = self.get_connection()
+
+            # Create a cursor
+            cursor = connection.cursor()
+
+            # Define the PostgreSQL INSERT statement
+            postgres_insert_query = (
+                "INSERT INTO sensor_data_temp (timestamp, temperature) VALUES (%s, %s)"
+            )
+
+            # Insert data into the PostgreSQL table
+            record_to_insert = (timestamp, temperature)
+            cursor.execute(postgres_insert_query, record_to_insert)
+
+            # Commit the changes to the database
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Record inserted successfully into sensor_data table_temp")
+        except Exception as e:
+            print(e, flush=True)
+            pass
+        finally:
+            connection.close()
 
 
 if __name__ == "__main__":
-    main = Main()
+    main = Main(
+        host=os.environ.get("HOST"),
+        token=os.environ.get("TOKEN"),
+        tickets=os.environ.get("TICKETS"),
+        t_max=os.environ.get("T_MAX"),
+        t_min=os.environ.get("T_MIN"),
+        database=os.environ.get("DATABASE"),
+    )
     main.start()
