@@ -16,6 +16,7 @@
     - [Métriques CI](#métriques-ci)
   - [Deploiement Kubernetes](#deploiement-kubernetes)
     - [Deploiement du HVAC Controller sur le namespace Kubernetes](#deploiement-du-hvac-controller-sur-le-namespace-kubernetes)
+    - [Deploiement de la Base de données sur le namespace Kubernetes](#deploiement-de-la-base-de-donnees-sur-le-namespace-kubernetes)
   - [Automatisation](#automatisation)
     - [Automatisation du deploiement des dernieres versions du HVAC](#automatisation-du-deploiement-des-dernieres-versions-du-hvac)
 
@@ -312,7 +313,7 @@ Nous avons décidé d’ajouter plus de 4 métriques, car celles-ci sont importa
 Pour le fichier Kubernetes du HVAC, nous avons cree un fichier "yml" dans le dossier ./Config qui contient toutes les donnees necessaires au deploiement :
 
 ```yml
-  apiVersion: v1
+apiVersion: v1
 kind: Deployment
 metadata:
   name: hvac-controller-deployment
@@ -387,6 +388,28 @@ spec:
 En effet, nous pouvons voir qu'il y a certaines cles pour les variables. Nous utilisons un fichier de configmap et de secret pour avoir une securite sur nos informations 
 sensibles. De plus, le fichier va chercher la derniere image de HVAC sur le Dockerhub (latest) pour deployer le Kubernetes.
 
+### Deploiement de la Base de données sur le namespace Kubernetes
+
+Pour le deploiement de la base de donnees, nous avons cree deux fichiers qui nous aide a y arriver. Le premmier, "database-service" :
+
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+spec:
+  selector:
+    app: database
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+```
+
+aide a decrire le fichier de base de donnees en lui donnant les informations necessaires comme par exemple : le protocole, le port et le port cible. 
+De plus, il donne le type de d'operation que le systeme fait, ClusterIP dans ce cas. Pour utiliser cette base de donnees et s'assurer que le lien se fasse,
+nous utilisons PGAdmin (GUI). Le nom d'utilisateur et le mot de passe pour y acceder nous ont ete donner lors de ce laboratoire.
 
 ## Automatisation
 
