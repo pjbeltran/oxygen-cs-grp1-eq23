@@ -78,3 +78,10 @@ jobs:
         TAG=${{ steps.date-tag.outputs.tag }}
         docker push pjbeltran/hvac:latest
         docker push pjbeltran/hvac:${TAG}
+
+    - name: Deploy HVAC to Kubernetes
+      if: github.ref == 'refs/heads/main'
+      working-directory: ./Config
+      run: |
+        TAG=${{ steps.date-tag.outputs.tag }}
+        kubectl apply -f hvac-controller-deployment.yaml  
