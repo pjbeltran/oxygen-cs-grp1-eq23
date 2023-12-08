@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hvac-controller-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hvac-controller
+  template:
+    metadata:
+      labels:
+        app: hvac-controller
+    spec:
+      containers:
+      - name: hvac-controller-container
+        image: pjbeltran/hvac:latest
+        env:
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              name: host
+              key: HOST
+        - name: DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: database
+              key: DATABASE
+        - name: T_MIN
+          valueFrom:
+            configMapKeyRef:
+              name: tmin
+              key: T_MIN
+        - name: T_MAX
+          valueFrom:
+            configMapKeyRef:
+              name: tmax
+              key: T_MAX
+        - name: TICKETS
+          valueFrom:
+            configMapKeyRef:
+              name: tickets
+              key: TICKETS
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: token
+              key: TOKEN
+        - name: DATABASE_HOST
+          value: database-service
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: postgresdb
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: postgresuser
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: postgresport
+              key: POSTGRES_PORT
+        resources:
+            limits:
+              memory: "100Mi"
+              cpu: "0.2"
