@@ -411,6 +411,51 @@ aide a decrire le fichier de base de donnees en lui donnant les informations nec
 De plus, il donne le type de d'operation que le systeme fait, ClusterIP dans ce cas. Pour utiliser cette base de donnees et s'assurer que le lien se fasse,
 nous utilisons PGAdmin (GUI). Le nom d'utilisateur et le mot de passe pour y acceder nous ont ete donner lors de ce laboratoire.
 
+Le deuxieme, "database-deployment" :
+
+```yml
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: database-deployment
+  labels:
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+        - name: database-container
+          image: postgres:latest
+          ports:
+          - containerPort: 5432
+          env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMagKeyRef:
+                name: postgresdb
+                key: POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              configMagKeyRef:
+                name: postgresuser
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database-credentials
+                key: POSTGRES_PASSWORD
+```
+
+Ce fichier s'occupe de faire le deploiement vers le Kubernetes avec les informations donnees par le fichier "database-service". Comme dans les fichiers .yml de HVAC et Metrics,
+nous avons des variables qui sont cachees pour nous assurer une bonne securite de logiciel. Ces donnees peuvent etre retrouve dans les fichiers configmap et secret.
+
 ## Automatisation
 
 ### Automatisation du deploiement des dernieres versions du HVAC
