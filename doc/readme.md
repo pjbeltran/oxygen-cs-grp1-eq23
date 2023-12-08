@@ -5,7 +5,6 @@
 - [oxygen-cs-grp1-eq23](#oxygen-cs-grp1-eq23)
 - [Table des matières](#table-des-matières)
   - [Oxygen-CS](#oxygen-cs)
-    - [Modification des variables du code source](#modification-des-variables-du-code-source)
     - [Ajout de la base de données du code source](#ajout-de-la-base-de-données-du-code-source)
     - [Tests et modification](#tests-et-modification)
   - [Intégration continue](#intégration-continue)
