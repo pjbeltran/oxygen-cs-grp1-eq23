@@ -16,7 +16,7 @@
     - [Métriques CI](#métriques-ci)
   - [Deploiement Kubernetes](#deploiement-kubernetes)
     - [Deploiement du HVAC Controller sur le namespace Kubernetes](#deploiement-du-hvac-controller-sur-le-namespace-kubernetes)
-    - [Deploiement de la Base de données sur le namespace Kubernetes](#deploiement-de-la-base-de-donnees-sur-le-namespace-kubernetes)
+    - [Deploiement de la base de donnees sur le namespace Kubernetes](#deploiement-de-la-base-de-donnees-sur-le-namespace-kubernetes)
   - [Automatisation](#automatisation)
     - [Automatisation du deploiement des dernieres versions du HVAC](#automatisation-du-deploiement-des-dernieres-versions-du-hvac)
 
@@ -388,7 +388,7 @@ spec:
 En effet, nous pouvons voir qu'il y a certaines cles pour les variables. Nous utilisons un fichier de configmap et de secret pour avoir une securite sur nos informations 
 sensibles. De plus, le fichier va chercher la derniere image de HVAC sur le Dockerhub (latest) pour deployer le Kubernetes.
 
-### Deploiement de la Base de données sur le namespace Kubernetes
+### Deploiement de la base de donnees sur le namespace Kubernetes
 
 Pour le deploiement de la base de donnees, nous avons cree deux fichiers qui nous aide a y arriver. Le premmier, "database-service" :
 
