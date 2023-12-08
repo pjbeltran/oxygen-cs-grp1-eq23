@@ -333,27 +333,27 @@ spec:
         env:
         - name: HOST
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: host
               key: HOST
         - name: DATABASE
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: database
               key: DATABASE
         - name: T_MIN
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: tmin
               key: T_MIN
         - name: T_MAX
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: tmax
               key: T_MAX
         - name: TICKETS
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: tickets
               key: TICKETS
         - name: TOKEN
@@ -365,12 +365,12 @@ spec:
           value: database-service
         - name: POSTGRES_DB
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: postgresdb
               key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: postgresuser
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
@@ -380,7 +380,7 @@ spec:
               key: POSTGRES_PASSWORD
         - name: POSTGRES_PORT
           valueFrom:
-            configMagKeyRef:
+            configMapKeyRef:
               name: postgresport
               key: POSTGRES_PORT
 ```
@@ -438,12 +438,12 @@ spec:
           env:
           - name: POSTGRES_DB
             valueFrom:
-              configMagKeyRef:
+              configMapKeyRef:
                 name: postgresdb
                 key: POSTGRES_DB
           - name: POSTGRES_USER
             valueFrom:
-              configMagKeyRef:
+              configMapKeyRef:
                 name: postgresuser
                 key: POSTGRES_USER
           - name: POSTGRES_PASSWORD

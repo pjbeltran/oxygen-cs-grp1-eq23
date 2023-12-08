@@ -22,12 +22,12 @@ spec:
           env:
           - name: POSTGRES_DB
             valueFrom:
-              configMagKeyRef:
+              configMapKeyRef:
                 name: postgresdb
                 key: POSTGRES_DB
           - name: POSTGRES_USER
             valueFrom:
-              configMagKeyRef:
+              configMapKeyRef:
                 name: postgresuser
                 key: POSTGRES_USER
           - name: POSTGRES_PASSWORD

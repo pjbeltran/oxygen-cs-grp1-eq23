@@ -37,11 +37,11 @@ spec:
                 key: POSTGRES_PASSWORD
           resources:
             requests:
-              memory: "400Mi"
+              memory: "300Mi"
               cpu: "0.2"
             limits:
-              memory: "400Mi"
-              cpu: "0.5"
+              memory: "300Mi"
+              cpu: "0.4"
 
 ---
 apiVersion: v1
@@ -55,4 +55,4 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  type: ClusterIP
+  type: NodePort
