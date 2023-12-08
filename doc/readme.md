@@ -14,12 +14,11 @@
     - [Pipeline repository Metrics et HVAC](#pipeline-repository-metrics-et-hvac)
   - [Métriques DevOps](#métriques-devops)
     - [Métriques CI](#métriques-ci)
+  - [Automatisation](#automatisation)
+    - [Automatisation du deploiement des dernieres versions du HVAC](#automatisation-du-deploiement-des-dernieres-version-du-hvac)
 
 ## Oxygen-CS
 
-### Modification des variables du code source
-
-<p align="justify">Pour faire marcher le projet, nous avions premièrement changé les variables du code source. Ces variables étaient `HOST` (l’URL pour accéder à la simulation), `TOKEN` (le token donné par le chargé de laboratoire pour avoir accès aux données), `T_MAX` (la température maximum, en degré Celsius, avant que l'air conditionné (AC) embarque), `T_MIN` (la température minimum, en degré Celsius, avant que le chauffage embarque) et `DATABASE` (la base de données utilisée pour stocker les données de la simulation).</p>
 
 ```python
 if __name__ == "__main__":
@@ -304,3 +303,19 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
 
 Nous avons décidé d’ajouter plus de 4 métriques, car celles-ci sont importantes et essentielles pour bien comprendre le déroulement des "workflows" et des tests, permettant ainsi de mieux cibler les contraintes et les goulots d’étranglement. Avec ces dispositifs mis en place, nous aurons donc une bonne télémétrie du projet et de ceux à venir.
 
+## Automatisation
+
+### Automatisation du deploiement des dernieres versions du HVAC
+
+Pour l'automatisation du deploiement des dernieres versions du HVAC, nous avons change la "pipeline" dans le projet "oxygen-cs-grp1-eq23" en ajoutant ces lignes : 
+
+```yml
+  - name: Deploy HVAC to Kubernetes
+      if: github.ref == 'refs/heads/main'
+      working-directory: ./Config
+      run: |
+        TAG=${{ steps.date-tag.outputs.tag }}
+        kubectl apply -f hvac-controller-deployment.yaml  
+```
+En effet, si la branche est le "main", le "pipeline" va run la commande "kubctl apply" pour deployer la dernieres version du HVAC (avec le tag "latest").
+Elle va chercher le fichier dans le dossier ./Config ou se situe tous les fichiers relies a Kubernetes.
