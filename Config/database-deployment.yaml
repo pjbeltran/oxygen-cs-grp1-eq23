@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: database-container
-          image: postgres:latest
+          image: pjbeltran/postgres:latest
           ports:
           - containerPort: 5432
           env:
