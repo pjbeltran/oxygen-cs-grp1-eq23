@@ -28,8 +28,11 @@ jobs:
     - name: Install psycopg2
       run: pip install psycopg2
 
+    - name: Install python-dotenv
+      run: pip install python-dotenv
+
     - name: Install dependencies
-      run: pipenv install --dev --deploy --ignore-pipfile
+      run: pipenv install --dev --deploy
 
     - name: Run unit tests
       working-directory: ./test
@@ -75,3 +78,10 @@ jobs:
         TAG=${{ steps.date-tag.outputs.tag }}
         docker push pjbeltran/hvac:latest
         docker push pjbeltran/hvac:${TAG}
+
+    - name: Deploy HVAC to Kubernetes
+      if: github.ref == 'refs/heads/main'
+      working-directory: ./Config
+      run: |
+        TAG=${{ steps.date-tag.outputs.tag }}
+        kubectl apply -f hvac-controller-deployment.yaml  

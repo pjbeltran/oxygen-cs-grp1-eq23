@@ -14,12 +14,14 @@
     - [Pipeline repository Metrics et HVAC](#pipeline-repository-metrics-et-hvac)
   - [Métriques DevOps](#métriques-devops)
     - [Métriques CI](#métriques-ci)
+  - [Deploiement Kubernetes](#deploiement-kubernetes)
+    - [Deploiement du HVAC Controller sur le namespace Kubernetes](#deploiement-du-hvac-controller-sur-le-namespace-kubernetes)
+    - [Deploiement de la base de donnees sur le namespace Kubernetes](#deploiement-de-la-base-de-donnees-sur-le-namespace-kubernetes)
+  - [Automatisation](#automatisation)
+    - [Automatisation du deploiement des dernieres versions du HVAC](#automatisation-du-deploiement-des-dernieres-versions-du-hvac)
 
 ## Oxygen-CS
 
-### Modification des variables du code source
-
-<p align="justify">Pour faire marcher le projet, nous avions premièrement changé les variables du code source. Ces variables étaient `HOST` (l’URL pour accéder à la simulation), `TOKEN` (le token donné par le chargé de laboratoire pour avoir accès aux données), `T_MAX` (la température maximum, en degré Celsius, avant que l'air conditionné (AC) embarque), `T_MIN` (la température minimum, en degré Celsius, avant que le chauffage embarque) et `DATABASE` (la base de données utilisée pour stocker les données de la simulation).</p>
 
 ```python
 if __name__ == "__main__":
@@ -304,3 +306,169 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
 
 Nous avons décidé d’ajouter plus de 4 métriques, car celles-ci sont importantes et essentielles pour bien comprendre le déroulement des "workflows" et des tests, permettant ainsi de mieux cibler les contraintes et les goulots d’étranglement. Avec ces dispositifs mis en place, nous aurons donc une bonne télémétrie du projet et de ceux à venir.
 
+## Deploiement Kubernetes
+
+### Deploiement du HVAC Controller sur le namespace Kubernetes
+
+Pour le fichier Kubernetes du HVAC, nous avons cree un fichier "yml" dans le dossier ./Config qui contient toutes les donnees necessaires au deploiement :
+
+```yml
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: hvac-controller-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hvac-controller
+  template:
+    metadata:
+      labels:
+        app: hvac-controller
+    spec:
+      containers:
+      - name: hvac-controller-container
+        image: hvac:latest
+        env:
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              name: host
+              key: HOST
+        - name: DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: database
+              key: DATABASE
+        - name: T_MIN
+          valueFrom:
+            configMapKeyRef:
+              name: tmin
+              key: T_MIN
+        - name: T_MAX
+          valueFrom:
+            configMapKeyRef:
+              name: tmax
+              key: T_MAX
+        - name: TICKETS
+          valueFrom:
+            configMapKeyRef:
+              name: tickets
+              key: TICKETS
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: token
+              key: TOKEN
+        - name: DATABASE_HOST
+          value: database-service
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: postgresdb
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: postgresuser
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: postgresport
+              key: POSTGRES_PORT
+```
+
+En effet, nous pouvons voir qu'il y a certaines cles pour les variables. Nous utilisons un fichier de configmap et de secret pour avoir une securite sur nos informations 
+sensibles. De plus, le fichier va chercher la derniere image de HVAC sur le Dockerhub (latest) pour deployer le Kubernetes.
+
+### Deploiement de la base de donnees sur le namespace Kubernetes
+
+Pour le deploiement de la base de donnees, nous avons cree deux fichiers qui nous aide a y arriver. Le premmier, "database-service" :
+
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+spec:
+  selector:
+    app: database
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+```
+
+aide a decrire le fichier de base de donnees en lui donnant les informations necessaires comme par exemple : le protocole, le port et le port cible. 
+De plus, il donne le type de d'operation que le systeme fait, ClusterIP dans ce cas. Pour utiliser cette base de donnees et s'assurer que le lien se fasse,
+nous utilisons PGAdmin (GUI). Le nom d'utilisateur et le mot de passe pour y acceder nous ont ete donner lors de ce laboratoire.
+
+Le deuxieme, "database-deployment" :
+
+```yml
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: database-deployment
+  labels:
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+        - name: database-container
+          image: postgres:latest
+          ports:
+          - containerPort: 5432
+          env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: postgresdb
+                key: POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: postgresuser
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: database-credentials
+                key: POSTGRES_PASSWORD
+```
+
+Ce fichier s'occupe de faire le deploiement vers le Kubernetes avec les informations donnees par le fichier "database-service". Comme dans les fichiers .yml de HVAC et Metrics,
+nous avons des variables qui sont cachees pour nous assurer une bonne securite de logiciel. Ces donnees peuvent etre retrouve dans les fichiers configmap et secret.
+
+## Automatisation
+
+### Automatisation du deploiement des dernieres versions du HVAC
+
+Pour l'automatisation du deploiement des dernieres versions du HVAC, nous avons change la "pipeline" dans le projet "oxygen-cs-grp1-eq23" en ajoutant ces lignes : 
+
+```yml
+  - name: Deploy HVAC to Kubernetes
+      if: github.ref == 'refs/heads/main'
+      working-directory: ./Config
+      run: |
+        TAG=${{ steps.date-tag.outputs.tag }}
+        kubectl apply -f hvac-controller-deployment.yaml  
+```
+En effet, si la branche est le "main", le "pipeline" va run la commande "kubctl apply" pour deployer la dernieres version du HVAC (avec le tag "latest").
+Elle va chercher le fichier dans le dossier ./Config ou se situe tous les fichiers relies a Kubernetes.
