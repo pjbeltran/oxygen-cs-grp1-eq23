@@ -79,13 +79,6 @@ jobs:
         docker push pjbeltran/hvac:latest
         docker push pjbeltran/hvac:${TAG}
 
-    - name: Deploy Metrics to Kubernetes
-      if: github.ref == 'refs/heads/main'
-      working-directory: ./Config
-      run: |
-        TAG=${{ steps.date-tag.outputs.tag }}
-        kubectl apply -f metrics-api-deployment.yaml
-
     - name: Deploy HVAC to Kubernetes
       if: github.ref == 'refs/heads/main'
       working-directory: ./Config
