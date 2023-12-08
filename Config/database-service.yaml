@@ -36,12 +36,9 @@ spec:
                 name: database-credentials
                 key: POSTGRES_PASSWORD
           resources:
-            requests:
-              memory: "300Mi"
-              cpu: "0.2"
             limits:
-              memory: "300Mi"
-              cpu: "0.4"
+              memory: "200Mi"
+              cpu: "0.2"
 
 ---
 apiVersion: v1
