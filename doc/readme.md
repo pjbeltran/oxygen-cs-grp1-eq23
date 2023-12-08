@@ -13,11 +13,12 @@
     - [Pipeline repository Metrics et HVAC](#pipeline-repository-metrics-et-hvac)
   - [Métriques DevOps](#métriques-devops)
     - [Métriques CI](#métriques-ci)
-  - [Deploiement Kubernetes](#deploiement-kubernetes)
-    - [Deploiement du HVAC Controller sur le namespace Kubernetes](#deploiement-du-hvac-controller-sur-le-namespace-kubernetes)
-    - [Deploiement de la base de donnees sur le namespace Kubernetes](#deploiement-de-la-base-de-donnees-sur-le-namespace-kubernetes)
+  - [Gestion des ressources de votre cluster Kubernetes](#gestion-des-ressources-de-votre-cluster-kubernetes)
+  - [Déploiement Kubernetes](#déploiement-kubernetes)
+    - [Déploiement du HVAC Controller sur le namespace Kubernetes](#déploiement-du-hvac-controller-sur-le-namespace-kubernetes)
+    - [Déploiement de la base de données sur le namespace Kubernetes](#déploiement-de-la-base-de-données-sur-le-namespace-kubernetes)
   - [Automatisation](#automatisation)
-    - [Automatisation du deploiement des dernieres versions du HVAC](#automatisation-du-deploiement-des-dernieres-versions-du-hvac)
+    - [Automatisation du déploiement des dernieres versions du HVAC](#automatisation-du-déploiement-des-dernieres-versions-du-hvac)
 
 ## Oxygen-CS
 
@@ -305,14 +306,50 @@ await fetch('https://api.github.com/repos/pjbeltran/oxygen-cs-grp1-eq23/actions/
 
 Nous avons décidé d’ajouter plus de 4 métriques, car celles-ci sont importantes et essentielles pour bien comprendre le déroulement des "workflows" et des tests, permettant ainsi de mieux cibler les contraintes et les goulots d’étranglement. Avec ces dispositifs mis en place, nous aurons donc une bonne télémétrie du projet et de ceux à venir.
 
-## Deploiement Kubernetes
+## Gestion des ressources de votre cluster Kubernetes
 
-### Deploiement du HVAC Controller sur le namespace Kubernetes
+Pour assurer une certaine sécurité au niveau des données jugées sensibles et des variables environnement, tels que le mot de passe de notre base de données, le jeton qui nous a été donné pour le projet HVAC ou les température T_MIN et T_MAX. Il est donc impératif de créer des configmap et des secrets dans notre namespace Kubernetes.
 
-Pour le fichier Kubernetes du HVAC, nous avons cree un fichier "yml" dans le dossier ./Config qui contient toutes les donnees necessaires au deploiement :
+La commande  ```kubectl create [secret|configmap] [generic] [nom] --from-literal=[variable environnemnent]=[valeur de la variable]``` a été utilisé pour créer les configmap et secrets.
+Ce qui nous donne ce résultat pour les configmap:
+```
+NAME                 DATA   AGE
+host                 1      6d21h
+database             1      6d21h
+tickets              1      6d21h
+postgresdb           1      3d19h
+postgresuser         1      3d19h
+postgresport         1      3d18h
+tmin                 1      7h1m
+tmax                 1      6h57m
+
+```
+Et ceux-ci pour les secrets :
+
+```
+NAME                   TYPE     DATA   AGE
+token                  Opaque   1      6d21h
+database-credentials   Opaque   1      3d19h
+```
+
+Pour déployer nos images sur notre namespace Kubernetes, il faut définir des limites au niveau des ressources que les images utiliseront dans le namspace.
+La configuration prendra cette forme :
+```yml
+resources:
+  limits:
+    memory: "100Mi"
+    cpu: 30m
+```
+On limitera ainsi les ressources cpu et mémoire pourra utiliser dans Kubernetes
+
+## Déploiement Kubernetes
+
+### Déploiement du HVAC Controller sur le namespace Kubernetes
+
+Pour le fichier Kubernetes du HVAC, nous avons créé un fichier "yml" dans le dossier ./Config qui contient toutes les données nécessaires au déploiement :
 
 ```yml
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hvac-controller-deployment
@@ -328,7 +365,7 @@ spec:
     spec:
       containers:
       - name: hvac-controller-container
-        image: hvac:latest
+        image: pjbeltran/hvac:latest
         env:
         - name: HOST
           valueFrom:
@@ -382,14 +419,31 @@ spec:
             configMapKeyRef:
               name: postgresport
               key: POSTGRES_PORT
+        resources:
+            limits:
+              memory: "100Mi"
+              cpu: "0.2"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hvac-service
+spec:
+  selector:
+    app: hvac-controller
+  ports:
+    - port: 9090
+      targetPort: 9090
+  type: NodePort
 ```
 
-En effet, nous pouvons voir qu'il y a certaines cles pour les variables. Nous utilisons un fichier de configmap et de secret pour avoir une securite sur nos informations 
-sensibles. De plus, le fichier va chercher la derniere image de HVAC sur le Dockerhub (latest) pour deployer le Kubernetes.
+En effet, nous pouvons voir qu'il y a certaines clés pour les variables. Nous utilisons un fichier de configmap et de secret pour avoir une sécurité sur nos informations
+sensibles. De plus, le fichier va chercher la derniere image de HVAC sur le Dockerhub (latest) pour déployer le Kubernetes.
 
-### Deploiement de la base de donnees sur le namespace Kubernetes
+### Déploiement de la base de données sur le namespace Kubernetes
 
-Pour le deploiement de la base de donnees, nous avons cree deux fichiers qui nous aide a y arriver. Le premmier, "database-service" :
+Pour le déploiement de la base de données, nous avons créé un fichier qui comporte deux parties. Le premier, "database-service" :
 
 ```yml
 apiVersion: v1
@@ -403,17 +457,16 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
-  type: ClusterIP
+  type: NodePort
 ```
 
-aide a decrire le fichier de base de donnees en lui donnant les informations necessaires comme par exemple : le protocole, le port et le port cible. 
-De plus, il donne le type de d'operation que le systeme fait, ClusterIP dans ce cas. Pour utiliser cette base de donnees et s'assurer que le lien se fasse,
-nous utilisons PGAdmin (GUI). Le nom d'utilisateur et le mot de passe pour y acceder nous ont ete donner lors de ce laboratoire.
+Cela aide à configurer le déploiement du service de la base de données en lui donnant les informations nécessaires comme par exemple : le protocole, le port et le port cible.
+De plus, il donne le type de d'opération que le système fait, NodePort dans ce cas. Nous avons tenté de mettre en place PGAdmin (GUI) pour utiliser cette base de données et s'assurer que le lien se fasse. Le nom d'utilisateur et le mot de passe pour y accéder nous ont été donnés lors de ce laboratoire.
 
 Le deuxieme, "database-deployment" :
 
 ```yml
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: database-deployment
@@ -430,8 +483,8 @@ spec:
         app: database
     spec:
       containers:
-        - name: database-container
-          image: postgres:latest
+        - name: database
+          image: pjbeltran/postgres:latest
           ports:
           - containerPort: 5432
           env:
@@ -450,16 +503,20 @@ spec:
               secretKeyRef:
                 name: database-credentials
                 key: POSTGRES_PASSWORD
+          resources:
+            limits:
+              memory: "100Mi"
+              cpu: 30m
 ```
 
-Ce fichier s'occupe de faire le deploiement vers le Kubernetes avec les informations donnees par le fichier "database-service". Comme dans les fichiers .yml de HVAC et Metrics,
-nous avons des variables qui sont cachees pour nous assurer une bonne securite de logiciel. Ces donnees peuvent etre retrouve dans les fichiers configmap et secret.
+Ce fichier s'occupe de faire le déploiement vers le Kubernetes avec les informations données par le fichier "database-service". Comme dans les fichiers .yml de HVAC et Metrics,
+nous avons des variables qui sont cachées pour nous assurer une bonne sécurité de logiciel. Ces données peuvent être retrouvées dans les fichiers configmap et secret.
 
 ## Automatisation
 
-### Automatisation du deploiement des dernieres versions du HVAC
+### Automatisation du déploiement des dernieres versions du HVAC
 
-Pour l'automatisation du deploiement des dernieres versions du HVAC, nous avons change la "pipeline" dans le projet "oxygen-cs-grp1-eq23" en ajoutant ces lignes : 
+Pour l'automatisation du déploiement des dernières versions du HVAC, nous avons changé la "pipeline" dans le projet "oxygen-cs-grp1-eq23" en ajoutant ces lignes :
 
 ```yml
   - name: Deploy HVAC to Kubernetes
@@ -467,7 +524,7 @@ Pour l'automatisation du deploiement des dernieres versions du HVAC, nous avons 
       working-directory: ./Config
       run: |
         TAG=${{ steps.date-tag.outputs.tag }}
-        kubectl apply -f hvac-controller-deployment.yaml  
+        kubectl apply -f hvac-controller-deployment.yaml
 ```
-En effet, si la branche est le "main", le "pipeline" va run la commande "kubctl apply" pour deployer la dernieres version du HVAC (avec le tag "latest").
-Elle va chercher le fichier dans le dossier ./Config ou se situe tous les fichiers relies a Kubernetes.
+En effet, si la branche est le "main", le "pipeline" va lancer la commande "kubectl apply -f hvac-controller-deployment.yaml" pour déployer la dernière version du HVAC (avec le tag "latest").
+Elle va chercher le fichier dans le dossier ./Config où se situe tous les fichiers reliés à Kubernetes.
